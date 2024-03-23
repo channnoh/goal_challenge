@@ -2,36 +2,40 @@
 
 
 # Goal Challenge Project(목표 챌린지 서비스)
-<hr>
+
+<br/>
 
 ## 📌프로젝트 소개
+<br/>
 - 원하는 챌린지를 신청하고, 같은 챌린지를 진행하는 유저들과 동기부여를 얻으며, 함께 챌린지를 진행하는 
  서비스를 구축하기 위한 프로젝트입니다.
 <br/><br/>
 - 회원가입, 로그인, 챌린지 건의 / 등록 / 조회 / 신청 / 시작 / 조회 / 진행 / 종료 API를 제공합니다.  
-  
+<br/><br/>
 
 
-<hr>
+<hr><br>
+
 
 ## ⏱개발 기간
-* **2024.03.23 ~** 
 <br>
 
-<hr>
+- **2024.03.23 ~ ?**
+
+<br>
+
+
+<hr><br>
 
 ## 👨‍💻Tech Stack
-<br>
-<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> &ensp;
-<img src="https://img.shields.io/badge/java-%23ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"> &ensp;
-<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"> &ensp;
-<img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white"> &ensp;
-<img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white"> &ensp;
-<img src="https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white"> &ensp;
-<img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white"> 
+<br/>
+
+
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"> <img src="https://img.shields.io/badge/java-%23ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"> <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white"> <img src="https://img.shields.io/badge/redis-%23DD0031.svg?&style=for-the-badge&logo=redis&logoColor=white"> <img src="https://img.shields.io/badge/GIT-E44C30?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white"> 
 <br><br>
 
-<hr>
+
+<hr><br>
 
 ## ⭐주요 기능
 <br>
@@ -87,7 +91,7 @@
 - [ ] 챌린지 종료일자 자정에 챌린지의 상태는 챌린지 완료 상태가 된다.
 
 <br>
-<hr>
+<hr><br>
 
 ## 📜ERD
 <br>
@@ -96,7 +100,7 @@
 
 
 <br>
-<hr>
+<hr><br>
 
 ## 🔥Trouble Shooting
 <br>
