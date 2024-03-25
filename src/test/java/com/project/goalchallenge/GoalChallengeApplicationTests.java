@@ -1,4 +1,4 @@
-package com.project.goal_challenge;
+package com.project.goalchallenge;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

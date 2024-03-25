@@ -1,4 +1,4 @@
-package com.project.goal_challenge;
+package com.project.goalchallenge;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
