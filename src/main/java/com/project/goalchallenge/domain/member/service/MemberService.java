@@ -6,13 +6,17 @@ import static com.project.goalchallenge.global.config.exception.ErrorCode.WRONG_
 
 import com.project.goalchallenge.domain.member.dto.SignInDto;
 import com.project.goalchallenge.domain.member.dto.SignUpDto;
+import com.project.goalchallenge.domain.member.dto.WithDrawDto;
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.member.exception.MemberException;
 import com.project.goalchallenge.domain.member.repository.MemberRepository;
+import com.project.goalchallenge.domain.member.status.MemberStatus;
 import com.project.goalchallenge.global.auth.jwt.TokenProvider;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,4 +50,18 @@ public class MemberService {
     return SignInDto.Response.token(token);
   }
 
+  @Transactional
+  public WithDrawDto.Response withDraw(WithDrawDto.Request request) {
+
+    Member user = this.memberRepository.findByEmail(request.getEmail())
+        .orElseThrow(() -> new MemberException(ID_NOT_FOUND));
+
+    if (!this.passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+      throw new MemberException(WRONG_PASSWORD);
+    }
+
+    user.setMemberStatus(MemberStatus.DEACTIVATED);
+    user.setWithdrawalDate(LocalDateTime.now());
+    return WithDrawDto.Response.withDrawEmail(user.getEmail());
+  }
 }
