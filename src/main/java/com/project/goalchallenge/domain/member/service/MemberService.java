@@ -61,7 +61,7 @@ public class MemberService {
     }
 
     user.setMemberStatus(MemberStatus.DEACTIVATED);
-    user.setWithdrawalDate(LocalDateTime.now());
+    user.setWithdrawalDatetime(LocalDateTime.now());
     return WithDrawDto.Response.withDrawEmail(user.getEmail());
   }
 }
