@@ -27,8 +27,7 @@ public class MemberService {
   private final TokenProvider tokenProvider;
 
   public SignUpDto.Response signUp(SignUpDto.Request request) {
-    boolean exists = this.memberRepository.existsByEmail(request.getEmail());
-    if (exists) {
+    if (this.memberRepository.existsByEmail(request.getEmail())) {
       throw new MemberException(ALREADY_REGISTER_USER);
     }
 
