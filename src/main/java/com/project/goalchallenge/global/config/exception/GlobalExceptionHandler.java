@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
   public ErrorResponse handleMemberException(MemberException e) {
     log.error("Exception {} is occurred.", e.getMessage());
 
-    return new ErrorResponse(e.getErrorCode(), e.getStatus(), e.getMessage());
+    return new ErrorResponse(e.getErrorCode(), e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
   }
 
   @ExceptionHandler(Exception.class)
