@@ -1,7 +1,6 @@
 package com.project.goalchallenge.domain.member.entity;
 
 import static com.project.goalchallenge.domain.member.status.MemberStatus.ACTIVE;
-import static com.project.goalchallenge.domain.member.type.MemberType.ROLE_USER;
 
 import com.project.goalchallenge.domain.member.status.MemberStatus;
 import com.project.goalchallenge.domain.member.type.MemberType;
@@ -43,8 +42,8 @@ public class Member extends BaseEntity {
 
   // 유저, 관리자 권한 상태
   @Enumerated(EnumType.STRING)
-  @Builder.Default
-  private MemberType memberType = ROLE_USER;
+  @Column(nullable = false)
+  private MemberType memberType;
 
   // 유저 탈퇴 여부 상태
   @Enumerated(EnumType.STRING)

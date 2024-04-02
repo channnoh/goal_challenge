@@ -4,6 +4,7 @@ import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.member.type.MemberType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class SignUpDto {
         regexp = "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")
     private String email;
 
+    @NotNull(message = "MemberType is required")
     private MemberType memberType;
 
 
@@ -38,6 +40,7 @@ public class SignUpDto {
           .username(this.username)
           .password(this.password)
           .email(this.email)
+          .memberType(this.memberType)
           .build();
     }
   }
