@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(MemberException.class)
   public ErrorResponse handleMemberException(MemberException e) {
-    log.error("Exception {} is occurred.", e.getMessage());
+    log.error("Exception \"{}({})\" is occurred.", e.getErrorCode(), e.getErrorCode().getMessage());
 
     return new ErrorResponse(e.getErrorCode(), e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
   }
