@@ -2,6 +2,7 @@ package com.project.goalchallenge.domain.member.service;
 
 import static com.project.goalchallenge.global.config.exception.ErrorCode.ALREADY_REGISTER_USER;
 import static com.project.goalchallenge.global.config.exception.ErrorCode.ID_NOT_FOUND;
+import static com.project.goalchallenge.global.config.exception.ErrorCode.WITHDRAWAL_USER;
 import static com.project.goalchallenge.global.config.exception.ErrorCode.WRONG_PASSWORD;
 
 import com.project.goalchallenge.domain.member.dto.SignInDto;
@@ -45,6 +46,11 @@ public class MemberService {
     if (!this.passwordEncoder.matches(request.getPassword(), user.getPassword())) {
       throw new MemberException(WRONG_PASSWORD);
     }
+
+    if (user.getMemberStatus() == MemberStatus.DEACTIVATED) {
+      throw new MemberException(WITHDRAWAL_USER);
+    }
+
     String token = this.tokenProvider.generateToken(user.getEmail(), user.getMemberType());
     return SignInDto.Response.token(token);
   }

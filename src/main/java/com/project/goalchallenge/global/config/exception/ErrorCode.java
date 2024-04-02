@@ -12,6 +12,7 @@ public enum ErrorCode {
 
   // Auth Error
   ALREADY_REGISTER_USER(409, "이미 가입된 회원입니다."),
+  WITHDRAWAL_USER(404, "탈퇴한 회원입니다."),
   ID_NOT_FOUND(404, "일치하는 아이디가 없습니다."),
   WRONG_PASSWORD(401, "비밀번호가 일치하지 않습니다");
 
