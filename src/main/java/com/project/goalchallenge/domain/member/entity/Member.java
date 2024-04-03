@@ -51,5 +51,5 @@ public class Member extends BaseEntity {
   private MemberStatus memberStatus = ACTIVE;
 
   // 탈되일
-  private LocalDateTime withdrawalDatetime;
+  private LocalDateTime withdrawalDateTime;
 }

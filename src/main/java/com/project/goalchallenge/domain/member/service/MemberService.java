@@ -70,7 +70,7 @@ public class MemberService {
     }
 
     user.setMemberStatus(DEACTIVATED);
-    user.setWithdrawalDatetime(LocalDateTime.now());
+    user.setWithdrawalDateTime(LocalDateTime.now());
     return WithDrawDto.Response.withDrawEmail(user.getEmail());
   }
 }
