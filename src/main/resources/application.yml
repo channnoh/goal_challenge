@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/goalchallenge?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: goal
+    password: challenge
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+  jwt:
+   secret: Y2hhbi1zcHJpbmctYm9vdC1wcm9qZWN0LWdvYWwtY2hhbGxlbmdlLWp3dC1zZWNyZXQta2V5LXNldHRpbmctY2hlY2sK
