@@ -1,7 +1,7 @@
 package com.project.goalchallenge.domain.member.exception;
 
-import com.project.goalchallenge.global.config.exception.CustomException;
-import com.project.goalchallenge.global.config.exception.ErrorCode;
+import com.project.goalchallenge.global.exception.CustomException;
+import com.project.goalchallenge.global.exception.ErrorCode;
 import lombok.Getter;
 
 @Getter

@@ -1,6 +1,6 @@
-package com.project.goalchallenge.global.config.exception;
+package com.project.goalchallenge.global.exception;
 
-import static com.project.goalchallenge.global.config.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.project.goalchallenge.global.exception.ErrorCode.INTERNAL_SERVER_ERROR;
 
 import com.project.goalchallenge.domain.member.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;

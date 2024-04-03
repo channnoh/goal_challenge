@@ -1,9 +1,9 @@
 package com.project.goalchallenge.domain.member.service;
 
-import static com.project.goalchallenge.global.config.exception.ErrorCode.ALREADY_REGISTER_USER;
-import static com.project.goalchallenge.global.config.exception.ErrorCode.ID_NOT_FOUND;
-import static com.project.goalchallenge.global.config.exception.ErrorCode.WITHDRAWAL_USER;
-import static com.project.goalchallenge.global.config.exception.ErrorCode.WRONG_PASSWORD;
+import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_REGISTER_USER;
+import static com.project.goalchallenge.global.exception.ErrorCode.ID_NOT_FOUND;
+import static com.project.goalchallenge.global.exception.ErrorCode.WITHDRAWAL_USER;
+import static com.project.goalchallenge.global.exception.ErrorCode.WRONG_PASSWORD;
 
 import com.project.goalchallenge.domain.member.dto.SignInDto;
 import com.project.goalchallenge.domain.member.dto.SignUpDto;

@@ -1,4 +1,4 @@
-package com.project.goalchallenge.global.config.exception;
+package com.project.goalchallenge.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
