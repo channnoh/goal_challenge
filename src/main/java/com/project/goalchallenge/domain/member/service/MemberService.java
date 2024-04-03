@@ -1,5 +1,6 @@
 package com.project.goalchallenge.domain.member.service;
 
+import static com.project.goalchallenge.domain.member.status.MemberStatus.DEACTIVATED;
 import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_REGISTER_USER;
 import static com.project.goalchallenge.global.exception.ErrorCode.ID_NOT_FOUND;
 import static com.project.goalchallenge.global.exception.ErrorCode.WITHDRAWAL_USER;
@@ -11,7 +12,6 @@ import com.project.goalchallenge.domain.member.dto.WithDrawDto;
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.member.exception.MemberException;
 import com.project.goalchallenge.domain.member.repository.MemberRepository;
-import com.project.goalchallenge.domain.member.status.MemberStatus;
 import com.project.goalchallenge.global.auth.jwt.TokenProvider;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +47,7 @@ public class MemberService {
       throw new MemberException(WRONG_PASSWORD);
     }
 
-    if (user.getMemberStatus() == MemberStatus.DEACTIVATED) {
+    if (user.getMemberStatus() == DEACTIVATED) {
       throw new MemberException(WITHDRAWAL_USER);
     }
 
@@ -65,7 +65,11 @@ public class MemberService {
       throw new MemberException(WRONG_PASSWORD);
     }
 
-    user.setMemberStatus(MemberStatus.DEACTIVATED);
+    if(user.getMemberStatus() == DEACTIVATED){
+      throw new MemberException(WITHDRAWAL_USER);
+    }
+
+    user.setMemberStatus(DEACTIVATED);
     user.setWithdrawalDatetime(LocalDateTime.now());
     return WithDrawDto.Response.withDrawEmail(user.getEmail());
   }
