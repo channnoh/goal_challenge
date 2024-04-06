@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
         .stream()
         .map(DefaultMessageSourceResolvable::getDefaultMessage)
         .collect(Collectors.toList());
-
+    log.error("Exception \"{}({})\" is occurred.", BAD_REQUEST_VALID_ERROR, errors.get(0));
     return new ErrorResponse(
         BAD_REQUEST_VALID_ERROR, 400, errors.get(0));
 
