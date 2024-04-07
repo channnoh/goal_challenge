@@ -20,7 +20,10 @@ public enum ErrorCode {
   WRONG_PASSWORD(401, "비밀번호가 일치하지 않습니다"),
 
   // Challenge Error
-  DUPLICATED_CHALLENGE_NAME(409, "중복된 챌린지 이름입니다.");
+  DUPLICATED_CHALLENGE_NAME(409, "중복된 챌린지 이름입니다."),
+  CHALLENGE_NOT_FOUND(404, "존재하지 않는 챌린지입니다."),
+  ALREADY_HANDLED_CHALLENGE(409, "이미 처리된 챌린지입니다.");
+
 
   private final int status;
   private final String message;

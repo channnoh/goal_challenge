@@ -1,19 +1,27 @@
 package com.project.goalchallenge.domain.challenge.service;
 
+import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.RECRUITING;
+import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.REGISTRATION_REJECT;
+import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.APPROVE;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.WAITING;
+import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_HANDLED_CHALLENGE;
+import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_NOT_FOUND;
 import static com.project.goalchallenge.global.exception.ErrorCode.DUPLICATED_CHALLENGE_NAME;
 
 import com.project.goalchallenge.domain.challenge.dto.ChallengeInfoDto;
 import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto;
+import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.exception.ChallengeException;
 import com.project.goalchallenge.domain.challenge.repository.ChallengeRepository;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -44,5 +52,34 @@ public class ChallengeService {
     }
 
     return challenges.map(ChallengeInfoDto::fromEntity);
+  }
+
+  // 관리자가 등록 대기 상태인 챌린지를 처리하는 메서드
+  @Transactional
+  public RegistrationDto registerChallenge(RegistrationDto registrationDto) {
+
+    Challenge challenge = this.challengeRepository.findByChallengeName(
+            registrationDto.getChallengeName())
+        .orElseThrow(() -> new ChallengeException(CHALLENGE_NOT_FOUND));
+
+    if (challenge.getRegistrationStatus() != WAITING) {
+      throw new ChallengeException(ALREADY_HANDLED_CHALLENGE);
+    }
+
+    if (registrationDto.getRegistrationStatus() == APPROVE) {
+      Integer duration = challenge.getSuggestedDuration();
+      // 등록시점으로 부터 7일 후에 챌린지 신청마감 & 시작
+      challenge.setChallengeStartDateTime(LocalDate.now().atStartOfDay().plusDays(7));
+      // 챌린지 종료일자는 챌린지 시작일자 + 제안된 기간
+      challenge.setChallengeEndDateTime(LocalDate.now().atStartOfDay().plusDays(7 + duration));
+      // 챌린지가 등록 되는 시점에 챌린지 상태 RECRUITING 로 변경
+      challenge.setChallengeStatus(RECRUITING);
+    } else {
+      challenge.setChallengeStatus(REGISTRATION_REJECT);
+    }
+
+    challenge.setRegistrationStatus(registrationDto.getRegistrationStatus());
+
+    return registrationDto;
   }
 }
