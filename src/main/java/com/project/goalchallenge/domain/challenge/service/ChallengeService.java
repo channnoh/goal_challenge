@@ -67,12 +67,13 @@ public class ChallengeService {
     }
 
     if (registrationDto.getRegistrationStatus() == APPROVE) {
-      Integer duration = challenge.getSuggestedDuration();
       Integer duration = challenge.getSuggestedDurationDay();
+
+      LocalDate now = LocalDate.now();
       // 등록시점으로 부터 7일 후에 챌린지 신청마감 & 시작
-      challenge.setChallengeStartDateTime(LocalDate.now().atStartOfDay().plusDays(7));
+      challenge.setChallengeStartDateTime(now.atStartOfDay().plusDays(7));
       // 챌린지 종료일자는 챌린지 시작일자 + 제안된 기간
-      challenge.setChallengeEndDateTime(LocalDate.now().atStartOfDay().plusDays(7 + duration));
+      challenge.setChallengeEndDateTime(now.atStartOfDay().plusDays(7 + duration));
       // 챌린지가 등록 되는 시점에 챌린지 상태 RECRUITING 로 변경
       challenge.setChallengeStatus(RECRUITING);
     } else {
