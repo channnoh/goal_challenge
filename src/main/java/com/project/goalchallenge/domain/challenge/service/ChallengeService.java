@@ -68,6 +68,7 @@ public class ChallengeService {
 
     if (registrationDto.getRegistrationStatus() == APPROVE) {
       Integer duration = challenge.getSuggestedDuration();
+      Integer duration = challenge.getSuggestedDurationDay();
       // 등록시점으로 부터 7일 후에 챌린지 신청마감 & 시작
       challenge.setChallengeStartDateTime(LocalDate.now().atStartOfDay().plusDays(7));
       // 챌린지 종료일자는 챌린지 시작일자 + 제안된 기간

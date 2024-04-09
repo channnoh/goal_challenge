@@ -30,13 +30,13 @@ public class ChallengeSuggestDto {
     @Min(value = 10, message = "챌린지의 최소 기간은 10일 입니다.")
     @Max(value = 365, message = "챌린지의 최대 기간은 1년 입니다.")
     @NotNull(message = "SuggestedDuration is required")
-    private Integer suggestedDuration;
+    private Integer suggestedDurationDay;
 
     public Challenge toEntity() {
       return Challenge.builder()
           .challengeName(this.challengeName)
           .challengePurpose(this.challengePurpose)
-          .suggestedDuration(this.suggestedDuration)
+          .suggestedDurationDay(this.suggestedDurationDay)
           .build();
     }
   }

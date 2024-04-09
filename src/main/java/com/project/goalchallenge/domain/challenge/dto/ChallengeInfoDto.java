@@ -18,7 +18,7 @@ public class ChallengeInfoDto {
   private ChallengeStatus challengeStatus;
   private LocalDateTime suggestedDateTime;
   private RegistrationStatus registrationStatus;
-  private Integer suggestedDuration;
+  private Integer suggestedDurationDay;
 
   public static ChallengeInfoDto fromEntity(Challenge challenge) {
     return ChallengeInfoDto.builder()
@@ -27,7 +27,7 @@ public class ChallengeInfoDto {
         .challengeStatus(challenge.getChallengeStatus())
         .suggestedDateTime(challenge.getSuggestedDateTime())
         .registrationStatus(challenge.getRegistrationStatus())
-        .suggestedDuration(challenge.getSuggestedDuration())
+        .suggestedDurationDay(challenge.getSuggestedDurationDay())
         .build();
   }
 }

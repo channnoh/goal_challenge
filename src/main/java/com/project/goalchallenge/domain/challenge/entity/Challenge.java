@@ -56,7 +56,7 @@ public class Challenge {
   private RegistrationStatus registrationStatus = RegistrationStatus.WAITING; // 챌린지 등록상태
 
   @Column(nullable = false)
-  private Integer suggestedDuration; // 회원이 건의한 챌린지 기간
+  private Integer suggestedDurationDay; // 회원이 건의한 챌린지 기간
 
 
 }
