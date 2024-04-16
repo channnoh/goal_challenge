@@ -1,6 +1,6 @@
 package com.project.goalchallenge.domain.participant.entity;
 
-import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.*;
+import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.WAITING;
 
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.member.entity.Member;
