@@ -40,7 +40,7 @@ public class Participant {
   private ParticipantStatus participantStatus = WAITING;
 
   @Builder.Default
-  private Double ChallengeAchievementRate = 0.0;
+  private double ChallengeAchievementRate = 0.0;
 
   @ManyToOne
   @JoinColumn(name = "member_id")
