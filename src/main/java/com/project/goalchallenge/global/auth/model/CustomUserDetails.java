@@ -3,18 +3,22 @@ package com.project.goalchallenge.global.auth.model;
 import com.project.goalchallenge.domain.member.type.MemberType;
 import java.util.Collection;
 import java.util.Collections;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Getter
 public class CustomUserDetails implements UserDetails {
 
+  private final Long id;
   private final MemberType memberType;
   private final String password;
   private final String email;
 
 
-  public CustomUserDetails(MemberType memberType, String password, String email) {
+  public CustomUserDetails(Long id, MemberType memberType, String password, String email) {
+    this.id = id;
     this.memberType = memberType;
     this.password = password;
     this.email = email;
