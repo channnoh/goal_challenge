@@ -42,10 +42,10 @@ public class ParticipantService {
   private static final String PARTICIPANT_KEY_PREFIX = "participant:";
   private static final String PARTICIPANTS_COUNT_KEY_PREFIX = "participantsCount:";
 
-  public ParticipantDto applyChallenge(Long memberId, Long challengeId) {
+  public ParticipantDto applyChallenge(Long challengeId, Long userId) {
     String lockKey = CHALLENGE_LOCK_PREFIX + challengeId;
     RLock lock = redissonClient.getLock(lockKey);
-    String participantDuplicateKey = PARTICIPANT_KEY_PREFIX + memberId + ":" + challengeId;
+    String participantDuplicateKey = PARTICIPANT_KEY_PREFIX + userId + ":" + challengeId;
     String participantsCountKey = PARTICIPANTS_COUNT_KEY_PREFIX + challengeId;
 
     try {
@@ -61,13 +61,13 @@ public class ParticipantService {
           participantDuplicateKey, false);
 
       // 캐시 미스: DB에서 확인
-      checkParticipantDuplicateCacheMiss(memberId, challengeId, isAlreadyParticipant,
+      checkParticipantDuplicateCacheMiss(userId, challengeId, isAlreadyParticipant,
           participantsDuplicateCache, participantDuplicateKey);
 
       // 챌린지 중복 참여 검증 & 저장
       checkParticipantDuplicateAndStore(participantsDuplicateCache, participantDuplicateKey);
 
-      Member member = memberRepository.findById(memberId)
+      Member member = memberRepository.findById(userId)
           .orElseThrow(() -> new ParticipantException(ID_NOT_FOUND));
 
       if (member.getParticipants().size() >= 5) {
