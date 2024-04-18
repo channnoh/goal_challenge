@@ -63,40 +63,17 @@ public class ParticipantService {
         throw new SystemException(FAIL_ACQUIRE_LOCK);
       }
 
-      RMap<String, Boolean> participantsDuplicateCache = redissonClient.getMap(
-          "challengeParticipantsDuplicateCache");
-
-      // 캐시에서 키 조회
-      Boolean isAlreadyParticipant = participantsDuplicateCache.getOrDefault(
-          isParticipateKey, false);
-
-      // 캐시 미스: DB에서 확인
-      checkParticipantDuplicateCacheMiss(userId, challengeId, isAlreadyParticipant,
-          participantsDuplicateCache, isParticipateKey);
-
       // 챌린지 중복 참여 검증 & 저장
-      checkParticipantDuplicateAndStore(participantsDuplicateCache, isParticipateKey);
-
+      RMap<String, Boolean> participantsDuplicateCache = duplicateCheck(
+          challengeId, userId, isParticipateKey);
 
       if (member.getParticipants().size() >= 5) {
         participantsDuplicateCache.put(isParticipateKey, false);
         throw new ParticipantException(CHALLENGE_LIMIT_EXCEEDED);
       }
 
-
-      RAtomicLong participantsCount = redissonClient.getAtomicLong(participantsCountKey);
-
-      // 캐시 또는 DB에서 참가자 수를 초기화
-      if (!participantsCount.isExists()) {
-        participantsCount.set(challengeRepository.findById(challengeId)
-            .orElseThrow(() -> new ParticipantException(CHALLENGE_NOT_FOUND))
-            .getParticipants().size());
-      }
-
-      if (participantsCount.incrementAndGet() > MAX_PARTICIPANTS) {
-        participantsCount.decrementAndGet(); // 참가자 수를 다시 감소시켜 롤백
-        throw new ParticipantException(CHALLENGE_PARTICIPANTS_FULL);
-      }
+      // 챌린지 참여자 수 검증
+      participantsCount(challengeId, participantsCountKey);
 
       Participant participant = new Participant();
       participant.setMember(member);
@@ -112,6 +89,40 @@ public class ParticipantService {
         lock.unlock();
       }
     }
+  }
+
+  private void participantsCount(Long challengeId, String participantsCountKey) {
+    RAtomicLong participantsCount = redissonClient.getAtomicLong(participantsCountKey);
+
+    // 캐시 또는 DB에서 참가자 수를 초기화
+    if (!participantsCount.isExists()) {
+      participantsCount.set(challengeRepository.findById(challengeId)
+          .orElseThrow(() -> new ParticipantException(CHALLENGE_NOT_FOUND))
+          .getParticipants().size());
+    }
+
+    if (participantsCount.incrementAndGet() > MAX_PARTICIPANTS) {
+      participantsCount.decrementAndGet(); // 참가자 수를 다시 감소시켜 롤백
+      throw new ParticipantException(CHALLENGE_PARTICIPANTS_FULL);
+    }
+  }
+
+  private RMap<String, Boolean> duplicateCheck(Long challengeId, Long userId,
+      String isParticipateKey) {
+    RMap<String, Boolean> participantsDuplicateCache = redissonClient.getMap(
+        "challengeParticipantsDuplicateCache");
+
+    // 캐시에서 키 조회
+    Boolean isAlreadyParticipant = participantsDuplicateCache.getOrDefault(
+        isParticipateKey, false);
+
+    // 캐시 미스: DB에서 확인
+    checkParticipantDuplicateCacheMiss(userId, challengeId, isAlreadyParticipant,
+        participantsDuplicateCache, isParticipateKey);
+
+    // 챌린지 중복 참여 검증 & 저장
+    checkParticipantDuplicateAndStore(participantsDuplicateCache, isParticipateKey);
+    return participantsDuplicateCache;
   }
 
 
