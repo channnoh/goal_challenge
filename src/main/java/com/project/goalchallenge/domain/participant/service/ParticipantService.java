@@ -117,25 +117,23 @@ public class ParticipantService {
         isParticipateKey, false);
 
     // 캐시 미스: DB에서 확인
-    checkParticipantDuplicateCacheMiss(userId, challengeId, isAlreadyParticipant,
-        participantsDuplicateCache, isParticipateKey);
+    checkCacheMiss(challengeId, userId, isParticipateKey, isAlreadyParticipant,
+        participantsDuplicateCache);
 
     // 챌린지 중복 참여 검증 & 저장
     checkParticipantDuplicateAndStore(participantsDuplicateCache, isParticipateKey);
     return participantsDuplicateCache;
   }
 
-
-  private void checkParticipantDuplicateCacheMiss(Long memberId, Long challengeId,
-      Boolean isAlreadyParticipant,
-      RMap<String, Boolean> participantsDuplicateCache, String participantDuplicateKey) {
+  private void checkCacheMiss(Long challengeId, Long userId, String isParticipateKey,
+      Boolean isAlreadyParticipant, RMap<String, Boolean> participantsDuplicateCache) {
     if (!isAlreadyParticipant) {
-      boolean existsInDb = participantRepository.existsByMemberIdAndChallengeId(memberId,
-          challengeId);
-      if (existsInDb) {
+      if (participantRepository.existsByMemberIdAndChallengeId(userId,
+          challengeId)) {
+        log.info("db에서 예외발생");
         throw new ParticipantException(CHALLENGE_ALREADY_APPLIED);
       } else {
-        participantsDuplicateCache.put(participantDuplicateKey, false);
+        participantsDuplicateCache.put(isParticipateKey, false);
       }
     }
   }
