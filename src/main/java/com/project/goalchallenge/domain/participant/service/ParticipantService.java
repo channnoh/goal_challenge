@@ -45,8 +45,18 @@ public class ParticipantService {
   public ParticipantDto applyChallenge(Long challengeId, Long userId) {
     String lockKey = CHALLENGE_LOCK_PREFIX + challengeId;
     RLock lock = redissonClient.getLock(lockKey);
-    String participantDuplicateKey = PARTICIPANT_KEY_PREFIX + userId + ":" + challengeId;
+    String isParticipateKey = PARTICIPANT_KEY_PREFIX + userId + ":" + challengeId;
     String participantsCountKey = PARTICIPANTS_COUNT_KEY_PREFIX + challengeId;
+
+    Member member = memberRepository.findById(userId)
+        .orElseThrow(() -> new ParticipantException(ID_NOT_FOUND));
+
+    Challenge challenge = challengeRepository.findById(challengeId)
+        .orElseThrow(() -> new ParticipantException(CHALLENGE_NOT_FOUND));
+
+    if (!RECRUITING.equals(challenge.getChallengeStatus())) {
+      throw new ParticipantException(CHALLENGE_NOT_RECRUITING);
+    }
 
     try {
       if (!lock.tryLock(5, TimeUnit.SECONDS)) {
@@ -58,29 +68,21 @@ public class ParticipantService {
 
       // 캐시에서 키 조회
       Boolean isAlreadyParticipant = participantsDuplicateCache.getOrDefault(
-          participantDuplicateKey, false);
+          isParticipateKey, false);
 
       // 캐시 미스: DB에서 확인
       checkParticipantDuplicateCacheMiss(userId, challengeId, isAlreadyParticipant,
-          participantsDuplicateCache, participantDuplicateKey);
+          participantsDuplicateCache, isParticipateKey);
 
       // 챌린지 중복 참여 검증 & 저장
-      checkParticipantDuplicateAndStore(participantsDuplicateCache, participantDuplicateKey);
+      checkParticipantDuplicateAndStore(participantsDuplicateCache, isParticipateKey);
 
-      Member member = memberRepository.findById(userId)
-          .orElseThrow(() -> new ParticipantException(ID_NOT_FOUND));
 
       if (member.getParticipants().size() >= 5) {
-        participantsDuplicateCache.put(participantDuplicateKey, false);
+        participantsDuplicateCache.put(isParticipateKey, false);
         throw new ParticipantException(CHALLENGE_LIMIT_EXCEEDED);
       }
 
-      Challenge challenge = challengeRepository.findById(challengeId)
-          .orElseThrow(() -> new ParticipantException(CHALLENGE_NOT_FOUND));
-
-      if (!RECRUITING.equals(challenge.getChallengeStatus())) {
-        throw new ParticipantException(CHALLENGE_NOT_RECRUITING);
-      }
 
       RAtomicLong participantsCount = redissonClient.getAtomicLong(participantsCountKey);
 
@@ -135,9 +137,6 @@ public class ParticipantService {
       participantsDuplicateCache.put(participantDuplicateKey, true);
     }
   }
-
-
-
 
 
 }
