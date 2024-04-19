@@ -5,6 +5,7 @@ import static com.project.goalchallenge.global.exception.ErrorCode.INTERNAL_SERV
 
 import com.project.goalchallenge.domain.challenge.exception.ChallengeException;
 import com.project.goalchallenge.domain.member.exception.MemberException;
+import com.project.goalchallenge.domain.participant.exception.ParticipantException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,14 @@ public class GlobalExceptionHandler {
         e.getErrorCode().getMessage());
   }
 
+  @ExceptionHandler(ParticipantException.class)
+  public ErrorResponse handleParticipantException(ParticipantException e) {
+    log.error("Exception \"{}({})\" is occurred.", e.getErrorCode(), e.getErrorCode().getMessage());
+
+    return new ErrorResponse(e.getErrorCode(), e.getErrorCode().getStatus(),
+        e.getErrorCode().getMessage());
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
     List<String> errors = e.getBindingResult().getAllErrors()
@@ -43,6 +52,14 @@ public class GlobalExceptionHandler {
     return new ErrorResponse(
         BAD_REQUEST_VALID_ERROR, 400, errors.get(0));
 
+  }
+
+  @ExceptionHandler(SystemException.class)
+  public ErrorResponse handleSystemException(SystemException e) {
+    log.error("Exception \"{}({})\" is occurred.", e.getErrorCode(), e.getErrorCode().getMessage());
+
+    return new ErrorResponse(e.getErrorCode(), e.getErrorCode().getStatus(),
+        e.getErrorCode().getMessage());
   }
 
   @ExceptionHandler(Exception.class)

@@ -5,7 +5,10 @@ import static com.project.goalchallenge.domain.member.status.MemberStatus.ACTIVE
 import com.project.goalchallenge.domain.member.status.MemberStatus;
 import com.project.goalchallenge.domain.member.type.MemberType;
 import com.project.goalchallenge.domain.model.BaseEntity;
+import com.project.goalchallenge.domain.participant.entity.Participant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +16,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +33,7 @@ public class Member extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "member_id")
   private Long id;
 
   @Column(nullable = false)
@@ -52,4 +57,7 @@ public class Member extends BaseEntity {
 
   // 탈되일
   private LocalDateTime withdrawalDateTime;
+
+  @OneToMany(mappedBy = "member")
+  private List<Participant> participants = new ArrayList<>();
 }

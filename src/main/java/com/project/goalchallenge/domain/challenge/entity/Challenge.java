@@ -2,7 +2,10 @@ package com.project.goalchallenge.domain.challenge.entity;
 
 import com.project.goalchallenge.domain.challenge.status.ChallengeStatus;
 import com.project.goalchallenge.domain.challenge.status.RegistrationStatus;
+import com.project.goalchallenge.domain.participant.entity.Participant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -11,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +34,7 @@ public class Challenge {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "challenge_id")
   private Long id;
 
   @Column(unique = true, nullable = false)
@@ -57,6 +62,9 @@ public class Challenge {
 
   @Column(nullable = false)
   private Integer suggestedDurationDay; // 회원이 건의한 챌린지 기간
+
+  @OneToMany(mappedBy = "challenge")
+  private List<Participant> participants = new ArrayList<>();
 
 
 }
