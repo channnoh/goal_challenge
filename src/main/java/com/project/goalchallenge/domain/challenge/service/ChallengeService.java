@@ -122,9 +122,6 @@ public class ChallengeService {
   }
 
   private boolean isParticipantsEnough(Challenge challenge) {
-    if (challenge.getParticipants().size() >= 5) {
-      return true;
-    }
-    return false;
+    return challenge.getParticipants().size() >= 5;
   }
 }
