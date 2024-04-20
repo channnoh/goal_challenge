@@ -1,5 +1,7 @@
 package com.project.goalchallenge.domain.challenge.service;
 
+import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.IN_PROGRESS;
+import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.NOT_ENOUGH_PARTICIPANTS;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.RECRUITING;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.REGISTRATION_REJECT;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.APPROVE;
@@ -14,12 +16,16 @@ import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.exception.ChallengeException;
 import com.project.goalchallenge.domain.challenge.repository.ChallengeRepository;
+import com.project.goalchallenge.domain.participant.entity.Participant;
+import com.project.goalchallenge.domain.participant.status.ParticipantStatus;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,5 +89,42 @@ public class ChallengeService {
     challenge.setRegistrationStatus(registrationDto.getRegistrationStatus());
 
     return registrationDto;
+  }
+
+  @Scheduled(cron = "0 0 0 * * *")
+  public void challengeStart() {
+
+    List<Challenge> challengeList = challengeRepository.findByChallengeStatusAndChallengeStartDateTime(
+        RECRUITING,
+        LocalDate.now().atStartOfDay().plusDays(7));
+
+    if (challengeList.isEmpty()) {
+      log.info("No Challenge");
+    }
+
+    for (Challenge challenge : challengeList) {
+      if (!isParticipantsEnough(challenge)) {
+        challenge.setChallengeStatus(NOT_ENOUGH_PARTICIPANTS);
+        log.info("Challenge: {} is {}", challenge.getChallengeName(), NOT_ENOUGH_PARTICIPANTS);
+
+        for (Participant participant : challenge.getParticipants()) {
+          participant.setParticipantStatus(ParticipantStatus.FAIL);
+        }
+      } else {
+        challenge.setChallengeStatus(IN_PROGRESS);
+        log.info("Challenge: {} is {}", challenge.getChallengeName(), IN_PROGRESS);
+
+        for (Participant participant : challenge.getParticipants()) {
+          participant.setParticipantStatus(ParticipantStatus.IN_PROGRESS);
+        }
+      }
+    }
+  }
+
+  private boolean isParticipantsEnough(Challenge challenge) {
+    if (challenge.getParticipants().size() >= 5) {
+      return true;
+    }
+    return false;
   }
 }
