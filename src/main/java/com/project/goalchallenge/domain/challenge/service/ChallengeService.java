@@ -91,12 +91,13 @@ public class ChallengeService {
     return registrationDto;
   }
 
+  @Transactional
   @Scheduled(cron = "0 0 0 * * *")
   public void challengeStart() {
 
     List<Challenge> challengeList = challengeRepository.findByChallengeStatusAndChallengeStartDateTime(
         RECRUITING,
-        LocalDate.now().atStartOfDay().plusDays(7));
+        LocalDate.now().atStartOfDay());
 
     if (challengeList.isEmpty()) {
       log.info("No Challenge");
