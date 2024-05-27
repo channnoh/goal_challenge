@@ -2,11 +2,18 @@ spring:
   redis:
     host: localhost
     port: 6379
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/goalchallenge?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    username: goal
+#    password: challenge
+  # 도커용 db
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/goalchallenge?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: goal
-    password: challenge
+    #    url: jdbc:mysql://127.0.0.1:3306/goodsDb
+    url: jdbc:mysql://localhost:3306/goal?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
 
   jpa:
     hibernate:
