@@ -4,7 +4,7 @@ import com.project.goalchallenge.domain.member.dto.SignInDto;
 import com.project.goalchallenge.domain.member.dto.SignUpDto;
 import com.project.goalchallenge.domain.member.dto.WithDrawDto;
 import com.project.goalchallenge.domain.member.service.MemberService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

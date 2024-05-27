@@ -1,8 +1,8 @@
 package com.project.goalchallenge.domain.model;
 
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;

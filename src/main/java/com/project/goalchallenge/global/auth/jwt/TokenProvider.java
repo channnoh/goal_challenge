@@ -6,9 +6,9 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
-import javax.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,9 +22,14 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class TokenProvider {
 
-  private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60;
   private static final String KEY_ROLES = "roles";
   private final UserDetailsService userDetailsService;
+
+  @Value("${spring.jwt.access-token-expiration-time}")
+  private long ACCESS_TOKEN_EXPIRE_TIME;
+
+  @Value("${spring.jwt.refresh-token-expiration-time}")
+  private long REFRESH_TOKEN_EXPIRE_TIME;
 
   @Value("${spring.jwt.secret}")
   private String secretKey;
@@ -36,7 +41,7 @@ public class TokenProvider {
     claims.put(KEY_ROLES, memberType);
 
     Date now = new Date();
-    Date expiredDate = new Date(now.getTime() + TOKEN_EXPIRE_TIME);
+    Date expiredDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 
     return Jwts.builder()
         .setClaims(claims)

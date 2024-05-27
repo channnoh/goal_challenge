@@ -3,18 +3,18 @@ package com.project.goalchallenge.domain.challenge.entity;
 import com.project.goalchallenge.domain.challenge.status.ChallengeStatus;
 import com.project.goalchallenge.domain.challenge.status.RegistrationStatus;
 import com.project.goalchallenge.domain.participant.entity.Participant;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,6 +64,7 @@ public class Challenge {
   private Integer suggestedDurationDay; // 회원이 건의한 챌린지 기간
 
   @OneToMany(mappedBy = "challenge")
+  @Builder.Default
   private List<Participant> participants = new ArrayList<>();
 
 
