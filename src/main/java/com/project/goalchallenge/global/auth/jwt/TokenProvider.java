@@ -3,7 +3,6 @@ package com.project.goalchallenge.global.auth.jwt;
 import com.project.goalchallenge.domain.member.type.MemberType;
 import com.project.goalchallenge.global.auth.jwt.dto.TokenDto;
 import com.project.goalchallenge.global.auth.model.CustomUserDetails;
-import com.project.goalchallenge.global.config.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -65,7 +64,7 @@ public class TokenProvider {
         .signWith(key, SignatureAlgorithm.HS512)
         .compact();
 
-    log.info("[JwtTokenProvider] : accessToken, refreshToken 생성 완료");
+    log.info("[TokenProvider] : accessToken, refreshToken 생성 완료");
 
     return TokenDto.builder()
         .accessToken(accessToken)
@@ -90,22 +89,17 @@ public class TokenProvider {
 
   // Token 유효성 검증
   public boolean validateToken(String token) {
-    if (token == null) {
-      log.error("[JwtTokenProvider] JWT Token is null");
-      return false;
-    }
-
     try {
       Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
       return true;
     } catch (SecurityException | MalformedJwtException e) {
-      log.error("[JwtTokenProvider] Invalid JWT Token");
+      log.error("[TokenProvider] Invalid JWT Token");
     } catch (ExpiredJwtException e) {
-      log.error("[JwtTokenProvider] Expired JWT Token");
+      log.error("[TokenProvider] Expired JWT Token");
     } catch (UnsupportedJwtException e) {
-      log.error("[JwtTokenProvider] Unsupported JWT Token");
+      log.error("[TokenProvider] Unsupported JWT Token");
     } catch (IllegalArgumentException e) {
-      log.error("[JwtTokenProvider] JWT claims string is empty");
+      log.error("[TokenProvider] JWT claims string is empty");
     }
     return false;
   }

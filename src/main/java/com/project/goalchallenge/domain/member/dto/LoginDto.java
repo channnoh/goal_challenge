@@ -7,35 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class SignInDto {
+public class LoginDto {
 
   @Getter
   @Setter
   @NoArgsConstructor
   @AllArgsConstructor
   @Builder
-  public static class Request {
+  public static class LoginRequest {
 
     @NotBlank(message = "Email is required")
     private String email;
 
     @NotBlank(message = "Password is required")
     private String password;
-  }
-
-  @Getter
-  @Setter
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @Builder
-  public static class Response {
-
-    private String token;
-
-    public static SignInDto.Response token(String token) {
-      return Response.builder()
-          .token(token)
-          .build();
-    }
   }
 }

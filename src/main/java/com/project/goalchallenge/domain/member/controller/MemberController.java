@@ -1,10 +1,12 @@
 package com.project.goalchallenge.domain.member.controller;
 
-import com.project.goalchallenge.domain.member.dto.SignInDto;
-import com.project.goalchallenge.domain.member.dto.SignUpDto;
+import static com.project.goalchallenge.domain.member.dto.SignUpDto.SignUpRequest;
+
+import com.project.goalchallenge.domain.member.dto.LoginDto.LoginRequest;
 import com.project.goalchallenge.domain.member.dto.SignUpDto.SignUpResponse;
 import com.project.goalchallenge.domain.member.dto.WithDrawDto;
 import com.project.goalchallenge.domain.member.service.MemberService;
+import com.project.goalchallenge.global.auth.jwt.dto.TokenDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +23,18 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto.SignUpRequest request) {
+  public ResponseEntity<?> signUp(@RequestBody @Valid SignUpRequest request) {
     SignUpResponse response = this.memberService.signUp(request);
 
     return ResponseEntity.ok(response);
   }
 
-//  @PostMapping("/signin")
-//  public ResponseEntity<?> signIn(@RequestBody @Valid SignInDto.Request request) {
-//    SignInDto.Response response = this.memberService.signIn(request);
-//
-//    return ResponseEntity.ok(response);
-//  }
+  @PostMapping("/login")
+  public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
+    TokenDto response = this.memberService.login(request);
+
+    return ResponseEntity.ok(response);
+  }
 
   @PostMapping("/withdraw")
   public ResponseEntity<?> withDraw(@RequestBody @Valid WithDrawDto.Request request) {
