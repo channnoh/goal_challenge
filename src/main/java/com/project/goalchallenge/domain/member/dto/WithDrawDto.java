@@ -13,7 +13,7 @@ public class WithDrawDto {
   @Setter
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class Request {
+  public static class WithDrawRequest {
 
     @NotBlank(message = "Email is required")
     private String email;
@@ -27,12 +27,12 @@ public class WithDrawDto {
   @NoArgsConstructor
   @AllArgsConstructor
   @Builder
-  public static class Response {
+  public static class WithDrawResponse {
 
     private String email;
 
-    public static WithDrawDto.Response withDrawEmail(String email) {
-      return Response.builder()
+    public static WithDrawResponse withDrawEmail(String email) {
+      return WithDrawResponse.builder()
           .email(email)
           .build();
     }

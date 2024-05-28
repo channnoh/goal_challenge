@@ -9,7 +9,8 @@ import static com.project.goalchallenge.global.exception.ErrorCode.WITHDRAWAL_US
 import static com.project.goalchallenge.global.exception.ErrorCode.WRONG_PASSWORD;
 
 import com.project.goalchallenge.domain.member.dto.LoginDto.LoginRequest;
-import com.project.goalchallenge.domain.member.dto.WithDrawDto;
+import com.project.goalchallenge.domain.member.dto.WithDrawDto.WithDrawRequest;
+import com.project.goalchallenge.domain.member.dto.WithDrawDto.WithDrawResponse;
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.member.exception.MemberException;
 import com.project.goalchallenge.domain.member.repository.MemberRepository;
@@ -78,14 +79,14 @@ public class MemberService {
     return tokenDto;
   }
 
-
+  // 회원 탈퇴
   @Transactional
-  public WithDrawDto.Response withDraw(WithDrawDto.Request request) {
+  public WithDrawResponse withDraw(WithDrawRequest withDrawRequest) {
 
-    Member user = this.memberRepository.findByEmail(request.getEmail())
+    Member user = this.memberRepository.findByEmail(withDrawRequest.getEmail())
         .orElseThrow(() -> new MemberException(ID_NOT_FOUND));
 
-    if (!this.passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+    if (!this.passwordEncoder.matches(withDrawRequest.getPassword(), user.getPassword())) {
       throw new MemberException(WRONG_PASSWORD);
     }
 
@@ -95,6 +96,6 @@ public class MemberService {
 
     user.setMemberStatus(DEACTIVATED);
     user.setWithdrawalDateTime(LocalDateTime.now());
-    return WithDrawDto.Response.withDrawEmail(user.getEmail());
+    return WithDrawResponse.withDrawEmail(user.getEmail());
   }
 }
