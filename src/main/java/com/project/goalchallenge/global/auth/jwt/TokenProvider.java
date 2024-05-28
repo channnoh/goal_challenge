@@ -83,7 +83,7 @@ public class TokenProvider {
 
   // Token Claims 에서 email 꺼내오기
   public String getUserEmail(String token) {
-    return this.parseClaims(token).getSubject();
+    return this.parseClaims(token).get("email").toString();
   }
 
 
