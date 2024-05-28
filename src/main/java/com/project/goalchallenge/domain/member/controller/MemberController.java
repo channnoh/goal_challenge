@@ -2,6 +2,7 @@ package com.project.goalchallenge.domain.member.controller;
 
 import com.project.goalchallenge.domain.member.dto.SignInDto;
 import com.project.goalchallenge.domain.member.dto.SignUpDto;
+import com.project.goalchallenge.domain.member.dto.SignUpDto.SignUpResponse;
 import com.project.goalchallenge.domain.member.dto.WithDrawDto;
 import com.project.goalchallenge.domain.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -20,18 +21,18 @@ public class MemberController {
   private final MemberService memberService;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto.Request request) {
-    SignUpDto.Response response = this.memberService.signUp(request);
+  public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto.SignUpRequest request) {
+    SignUpResponse response = this.memberService.signUp(request);
 
     return ResponseEntity.ok(response);
   }
 
-  @PostMapping("/signin")
-  public ResponseEntity<?> signIn(@RequestBody @Valid SignInDto.Request request) {
-    SignInDto.Response response = this.memberService.signIn(request);
-
-    return ResponseEntity.ok(response);
-  }
+//  @PostMapping("/signin")
+//  public ResponseEntity<?> signIn(@RequestBody @Valid SignInDto.Request request) {
+//    SignInDto.Response response = this.memberService.signIn(request);
+//
+//    return ResponseEntity.ok(response);
+//  }
 
   @PostMapping("/withdraw")
   public ResponseEntity<?> withDraw(@RequestBody @Valid WithDrawDto.Request request) {
