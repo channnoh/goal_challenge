@@ -1,28 +1,34 @@
 package com.project.goalchallenge.global.auth.jwt;
 
 import com.project.goalchallenge.domain.member.type.MemberType;
+import com.project.goalchallenge.global.auth.jwt.dto.TokenDto;
+import com.project.goalchallenge.global.auth.model.CustomUserDetails;
+import com.project.goalchallenge.global.config.redis.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TokenProvider {
 
-  private static final String KEY_ROLES = "roles";
+  private static final String KEY_ROLES = "role";
   private final UserDetailsService userDetailsService;
 
   @Value("${spring.jwt.access-token-expiration-time}")
@@ -33,47 +39,79 @@ public class TokenProvider {
 
   @Value("${spring.jwt.secret}")
   private String secretKey;
+
+  private static final String TOKEN_PREFIX = "Bearer ";
+
   private Key key;
 
-  public String generateToken(String userEmail, MemberType memberType) {
-
-    Claims claims = Jwts.claims().setSubject(userEmail);
-    claims.put(KEY_ROLES, memberType);
+  // Access token, Refresh token 생성
+  public TokenDto generateToken(String email, MemberType memberType) {
 
     Date now = new Date();
-    Date expiredDate = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
 
-    return Jwts.builder()
-        .setClaims(claims)
-        .setIssuedAt(now)
-        .setExpiration(expiredDate)
-        .signWith(key)
+    Date accessTokenExpiration = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME);
+    String accessToken = Jwts.builder()
+        .setExpiration(accessTokenExpiration)
+        .setSubject("access-token")
+        .claim("email", email)
+        .claim(KEY_ROLES, memberType)
+        .signWith(key, SignatureAlgorithm.HS512)
         .compact();
+
+    Date refreshTokenExpiration = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME);
+    String refreshToken = Jwts.builder()
+        .setExpiration(refreshTokenExpiration)
+        .setSubject("refresh-token")
+        .signWith(key, SignatureAlgorithm.HS512)
+        .compact();
+
+    log.info("[JwtTokenProvider] : accessToken, refreshToken 생성 완료");
+
+    return TokenDto.builder()
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .build();
   }
 
-
+  // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
   public Authentication getAuthentication(String token) {
-    UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
+    CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(
+        this.getUserEmail(token));
 
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
 
 
+  // Token Claims 에서 email 꺼내오기
   public String getUserEmail(String token) {
     return this.parseClaims(token).getSubject();
   }
 
 
+  // Token 유효성 검증
   public boolean validateToken(String token) {
-    if (!StringUtils.hasText(token)) {
+    if (token == null) {
+      log.error("[JwtTokenProvider] JWT Token is null");
       return false;
     }
 
-    Claims claims = this.parseClaims(token);
-    return !claims.getExpiration().before(new Date());
+    try {
+      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+      return true;
+    } catch (SecurityException | MalformedJwtException e) {
+      log.error("[JwtTokenProvider] Invalid JWT Token");
+    } catch (ExpiredJwtException e) {
+      log.error("[JwtTokenProvider] Expired JWT Token");
+    } catch (UnsupportedJwtException e) {
+      log.error("[JwtTokenProvider] Unsupported JWT Token");
+    } catch (IllegalArgumentException e) {
+      log.error("[JwtTokenProvider] JWT claims string is empty");
+    }
+    return false;
   }
 
 
+  // Token 으로 부터 정보 추출
   private Claims parseClaims(String token) {
     try {
       return Jwts.parserBuilder()
@@ -84,6 +122,14 @@ public class TokenProvider {
     } catch (ExpiredJwtException e) {
       return e.getClaims();
     }
+  }
+
+  // 토큰 만료 시간 확인
+  public long getTokenExpirationTime(String token) {
+    if (token.startsWith(TOKEN_PREFIX)) {
+      token = token.substring(TOKEN_PREFIX.length());
+    }
+    return parseClaims(token).getExpiration().getTime();
   }
 
   @PostConstruct
