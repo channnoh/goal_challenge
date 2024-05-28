@@ -79,6 +79,27 @@ public class MemberService {
     return tokenDto;
   }
 
+  // 로그아웃
+  public void logout(String requestAccessToken) {
+    String accessToken = resolveToken(requestAccessToken);
+    String email = tokenProvider.getAuthentication(accessToken).getName();
+
+    // Redis 에 저장된 RT 삭제
+    String redisKey = "RT:" + email;
+    String refreshTokenInRedis = redisService.getData(redisKey);
+    if (refreshTokenInRedis != null) {
+      redisService.deleteData(redisKey);
+    }
+  }
+
+  // Request Header의 "Bearer {AccessToken}" 에서 {AccessToken} 추출
+  public String resolveToken(String requestAccessToken) {
+    if (requestAccessToken != null && requestAccessToken.startsWith("Bearer ")) {
+      return requestAccessToken.substring(7);
+    }
+    return null;
+  }
+
   // 회원 탈퇴
   @Transactional
   public WithDrawResponse withDraw(WithDrawRequest withDrawRequest) {

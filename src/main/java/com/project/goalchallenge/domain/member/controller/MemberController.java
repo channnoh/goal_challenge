@@ -8,8 +8,10 @@ import com.project.goalchallenge.domain.member.dto.SignUpDto.SignUpResponse;
 import com.project.goalchallenge.domain.member.dto.WithDrawDto.WithDrawResponse;
 import com.project.goalchallenge.domain.member.service.MemberService;
 import com.project.goalchallenge.global.auth.jwt.dto.TokenDto;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +38,14 @@ public class MemberController {
 
     return ResponseEntity.ok(response);
   }
+
+  @PostMapping("/logout")
+  public ResponseEntity<?> logout(HttpServletRequest request) {
+    memberService.logout(request.getHeader(HttpHeaders.AUTHORIZATION));
+
+    return ResponseEntity.ok().build();
+  }
+
 
   @PostMapping("/withdraw")
   public ResponseEntity<?> withDraw(@RequestBody @Valid WithDrawRequest request) {

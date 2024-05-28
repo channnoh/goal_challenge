@@ -60,8 +60,8 @@ public class SecurityConfig {
         .sessionManagement(configurer -> configurer
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-            .requestMatchers(anyRequest()).permitAll()
-            .requestMatchers(userRequestAuthenticated()).authenticated()
+                .requestMatchers(anyRequest()).permitAll()
+                .requestMatchers(userRequestAuthenticated()).authenticated()
 //            .requestMatchers(adminRequestAuthenticated()).authenticated()
         )
         // JWT Filter
@@ -83,7 +83,8 @@ public class SecurityConfig {
   // 유저 접근 가능
   private RequestMatcher[] userRequestAuthenticated() {
     List<RequestMatcher> requestMatchers = List.of(
-        antMatcher(POST, "/member/withdraw")
+        antMatcher(POST, "/member/withdraw"),
+        antMatcher(POST, "/member/logout")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
