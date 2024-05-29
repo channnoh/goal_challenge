@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.member.repository.MemberRepository;
+import com.project.goalchallenge.global.auth.jwt.dto.TokenDto;
 import com.project.goalchallenge.global.auth.service.CustomUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,11 @@ class TokenProviderTest {
     member.setMemberType(ROLE_ADMIN);
 
     //when
-    String token = tokenProvider.generateToken(member.getEmail(), member.getMemberType());
+    TokenDto tokenDto = tokenProvider.generateToken(member.getEmail(), member.getMemberType());
 
     //then
     assertThat(member.getEmail())
-        .isEqualTo(tokenProvider.getUserEmail(token));
+        .isEqualTo(tokenProvider.getUserEmail(tokenDto.getAccessToken()));
   }
 
 

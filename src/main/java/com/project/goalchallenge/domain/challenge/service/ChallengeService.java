@@ -11,7 +11,8 @@ import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_NOT
 import static com.project.goalchallenge.global.exception.ErrorCode.DUPLICATED_CHALLENGE_NAME;
 
 import com.project.goalchallenge.domain.challenge.dto.ChallengeInfoDto;
-import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto;
+import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestRequest;
+import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestResponse;
 import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.exception.ChallengeException;
@@ -37,13 +38,14 @@ public class ChallengeService {
   private final ChallengeRepository challengeRepository;
 
   // 회원이 챌린지 건의하는 메서드
-  public ChallengeSuggestDto.Response suggestChallenge(ChallengeSuggestDto.Request request) {
-    if (this.challengeRepository.existsByChallengeName(request.getChallengeName())) {
+  public ChallengeSuggestResponse suggestChallenge(
+      ChallengeSuggestRequest challengeSuggestRequest) {
+    if (challengeRepository.existsByChallengeName(challengeSuggestRequest.getChallengeName())) {
       throw new ChallengeException(DUPLICATED_CHALLENGE_NAME);
     }
 
-    Challenge savedChallenge = challengeRepository.save(request.toEntity());
-    return ChallengeSuggestDto.Response.fromEntity(savedChallenge);
+    Challenge savedChallenge = challengeRepository.save(challengeSuggestRequest.toEntity());
+    return ChallengeSuggestResponse.fromEntity(savedChallenge);
   }
 
   // 관리자가 회원이 건의한 챌린지 목록 조회하는 메서드(등록순으로 조회)
