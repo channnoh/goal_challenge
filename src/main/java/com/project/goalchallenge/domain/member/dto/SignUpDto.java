@@ -19,7 +19,7 @@ public class SignUpDto {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class Request {
+  public static class SignUpRequest {
 
     @NotBlank(message = "Username is required")
     private String username;
@@ -50,12 +50,12 @@ public class SignUpDto {
   @NoArgsConstructor
   @AllArgsConstructor
   @Builder
-  public static class Response {
+  public static class SignUpResponse {
 
     private String email;
 
-    public static Response fromEntity(Member member) {
-      return Response.builder()
+    public static SignUpResponse fromEntity(Member member) {
+      return SignUpResponse.builder()
           .email(member.getEmail())
           .build();
     }

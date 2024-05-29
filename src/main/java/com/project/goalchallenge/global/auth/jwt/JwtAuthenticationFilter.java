@@ -25,18 +25,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
 
-    String token = resolveTokenFromRequest(request);
+    String accessToken = resolveTokenFromRequest(request);
 
-    if (tokenProvider.validateToken(token)) {
-      Authentication auth = tokenProvider.getAuthentication(token);
+    if (accessToken != null && tokenProvider.validateToken(accessToken)) {
+      Authentication auth = tokenProvider.getAuthentication(accessToken);
       SecurityContextHolder.getContext().setAuthentication(auth);
-
-      log.info("UserEmail -> {}, URI -> {}", tokenProvider.getUserEmail(token),
-          request.getRequestURI());
-    } else {
-      log.error("토큰 유효성 검증 실패");
     }
-
     filterChain.doFilter(request, response);
 
   }
