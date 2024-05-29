@@ -1,6 +1,7 @@
 package com.project.goalchallenge.domain.challenge.controller;
 
-import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto;
+import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestRequest;
+import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestResponse;
 import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
 import com.project.goalchallenge.domain.challenge.service.ChallengeService;
 import jakarta.validation.Valid;
@@ -26,9 +27,9 @@ public class ChallengeController {
 
   @PostMapping("/suggest")
   public ResponseEntity<?> suggestChallenge(
-      @RequestBody @Valid ChallengeSuggestDto.Request request) {
+      @RequestBody @Valid ChallengeSuggestRequest request) {
 
-    ChallengeSuggestDto.Response response = this.challengeService.suggestChallenge(request);
+    ChallengeSuggestResponse response = this.challengeService.suggestChallenge(request);
 
     return ResponseEntity.ok(response);
 

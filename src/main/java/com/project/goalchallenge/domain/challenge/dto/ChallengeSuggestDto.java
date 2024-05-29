@@ -19,7 +19,7 @@ public class ChallengeSuggestDto {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class Request {
+  public static class ChallengeSuggestRequest {
 
     @NotBlank(message = "ChallengeName is required")
     private String challengeName;
@@ -46,12 +46,12 @@ public class ChallengeSuggestDto {
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class Response {
+  public static class ChallengeSuggestResponse {
 
     private String challengeName;
 
-    public static ChallengeSuggestDto.Response fromEntity(Challenge challenge) {
-      return Response.builder()
+    public static ChallengeSuggestResponse fromEntity(Challenge challenge) {
+      return ChallengeSuggestResponse.builder()
           .challengeName(challenge.getChallengeName())
           .build();
     }
