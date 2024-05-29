@@ -62,7 +62,7 @@ public class SecurityConfig {
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers(anyRequest()).permitAll()
                 .requestMatchers(userRequestAuthenticated()).authenticated()
-//            .requestMatchers(adminRequestAuthenticated()).authenticated()
+                .requestMatchers(adminRequestAuthenticated()).hasRole("ADMIN")
         )
         // JWT Filter
         .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),
@@ -88,12 +88,12 @@ public class SecurityConfig {
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
-//
-//  // 관리자 접근 가능
-//  private RequestMatcher[] adminRequestAuthenticated() {
-//    List<RequestMatcher> requestMatchers = List.of(
-//        antMatcher(POST, "/member/withdraw")
-//    );
-//    return requestMatchers.toArray(RequestMatcher[]::new);
-//  }
+
+  // 관리자 접근 가능
+  private RequestMatcher[] adminRequestAuthenticated() {
+    List<RequestMatcher> requestMatchers = List.of(
+        antMatcher(POST, "/member/withdraw")
+    );
+    return requestMatchers.toArray(RequestMatcher[]::new);
+  }
 }
