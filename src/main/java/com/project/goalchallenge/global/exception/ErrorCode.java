@@ -35,6 +35,9 @@ public enum ErrorCode {
   // JwtFilterAuthenticationError
   UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),
 
+  // AccessDeniedError
+  FORBIDDEN(403, "권한이 없는 사용자입니다.");
+
   private final int status;
   private final String message;
 
