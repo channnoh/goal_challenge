@@ -54,11 +54,6 @@ public class ChallengeService {
     Page<Challenge> challenges = challengeRepository.findAllByRegistrationStatus(
         PageRequest.of(page, 10, Sort.by("suggestedDateTime").descending()), WAITING);
 
-    if (page >= challenges.getTotalPages()) {
-      challenges = challengeRepository.findAllByRegistrationStatus(
-          PageRequest.of(0, 10, Sort.by("suggestedDateTime").descending()), WAITING);
-    }
-
     return challenges.map(ChallengeInfoDto::fromEntity);
   }
 
