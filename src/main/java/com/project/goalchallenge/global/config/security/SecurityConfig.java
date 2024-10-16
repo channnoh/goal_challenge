@@ -65,7 +65,6 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests
             .requestMatchers(anyRequest()).permitAll()
-            .requestMatchers(requestAdminAuthenticated()).authenticated()
             .requestMatchers(requestAuthenticated()).authenticated()
         )
         .exceptionHandling(exceptionHandling ->
@@ -89,21 +88,14 @@ public class SecurityConfig {
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
 
-  // 관리자 접근 가능
-  private RequestMatcher[] requestAdminAuthenticated() {
-    List<RequestMatcher> requestMatchers = List.of(
-        antMatcher(GET, "/challenge/suggested/list"),
-        antMatcher(PATCH, "/challenge/suggested")
-    );
-    return requestMatchers.toArray(RequestMatcher[]::new);
-  }
-
-  // 유저 접근 가능
+  // 유저,관리자 접근 가능
   private RequestMatcher[] requestAuthenticated() {
     List<RequestMatcher> requestMatchers = List.of(
         antMatcher(POST, "/member/withdraw"),
         antMatcher(POST, "/member/logout"),
-        antMatcher(POST, "/challenge/suggest")
+        antMatcher(POST, "/challenge/suggest"),
+        antMatcher(GET, "/challenge/suggested/list"),
+        antMatcher(PATCH, "/challenge/suggested")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
