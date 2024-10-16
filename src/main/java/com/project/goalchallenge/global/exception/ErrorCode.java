@@ -32,6 +32,8 @@ public enum ErrorCode {
   CHALLENGE_LIMIT_EXCEEDED(400, "신청할 수 있는 챌린지의 최대 개수를 초과했습니다."),
   CHALLENGE_ALREADY_APPLIED(409, "이미 신청된 챌린지 입니다.");
 
+  // JwtFilterAuthenticationError
+  UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),
 
   private final int status;
   private final String message;

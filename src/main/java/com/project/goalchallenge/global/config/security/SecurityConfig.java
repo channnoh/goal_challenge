@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -30,6 +31,7 @@ import org.springframework.web.cors.CorsConfiguration;
 public class SecurityConfig {
 
   private final TokenProvider tokenProvider;
+  private final AuthenticationEntryPoint authenticationEntryPointHandler;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -63,6 +65,11 @@ public class SecurityConfig {
             .requestMatchers(anyRequest()).permitAll()
             .requestMatchers(requestAuthenticated()).authenticated()
         )
+        .exceptionHandling(exceptionHandling ->
+            exceptionHandling
+                .authenticationEntryPoint(authenticationEntryPointHandler)
+        )
+
         // JWT Filter
         .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),
             UsernamePasswordAuthenticationFilter.class);
