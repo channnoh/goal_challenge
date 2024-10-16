@@ -3,6 +3,7 @@ package com.project.goalchallenge.global.auth.jwt;
 import com.project.goalchallenge.domain.member.type.MemberType;
 import com.project.goalchallenge.global.auth.jwt.dto.TokenDto;
 import com.project.goalchallenge.global.auth.model.CustomUserDetails;
+import com.project.goalchallenge.global.auth.service.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -19,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 public class TokenProvider {
 
   private static final String KEY_ROLES = "role";
-  private final UserDetailsService userDetailsService;
+  private final CustomUserDetailsService userDetailsService;
 
   @Value("${spring.jwt.access-token-expiration-time}")
   private long ACCESS_TOKEN_EXPIRE_TIME;
@@ -77,6 +77,7 @@ public class TokenProvider {
     CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(
         this.getUserEmail(token));
 
+    log.info("[JwtTokenProvider] 토큰 인증 정보 조회 완료, userName : {}", userDetails.getUsername());
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
 

@@ -2,6 +2,7 @@ package com.project.goalchallenge.domain.member.service;
 
 import static com.project.goalchallenge.domain.member.dto.SignUpDto.SignUpRequest;
 import static com.project.goalchallenge.domain.member.dto.SignUpDto.SignUpResponse;
+import static com.project.goalchallenge.domain.member.dto.WithDrawDto.WithDrawResponse.*;
 import static com.project.goalchallenge.domain.member.status.MemberStatus.DEACTIVATED;
 import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_REGISTER_USER;
 import static com.project.goalchallenge.global.exception.ErrorCode.ID_NOT_FOUND;
@@ -115,8 +116,7 @@ public class MemberService {
       throw new MemberException(WITHDRAWAL_USER);
     }
 
-    user.setMemberStatus(DEACTIVATED);
-    user.setWithdrawalDateTime(LocalDateTime.now());
-    return WithDrawResponse.withDrawEmail(user.getEmail());
+    user.withDrawUpdate(LocalDateTime.now());
+    return withDrawResponse(user.getEmail());
   }
 }
