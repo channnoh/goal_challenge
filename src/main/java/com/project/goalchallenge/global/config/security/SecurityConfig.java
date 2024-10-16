@@ -1,5 +1,6 @@
 package com.project.goalchallenge.global.config.security;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -63,6 +64,7 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests
             .requestMatchers(anyRequest()).permitAll()
+            .requestMatchers(requestAdminAuthenticated()).authenticated()
             .requestMatchers(requestAuthenticated()).authenticated()
         )
         .exceptionHandling(exceptionHandling ->
@@ -86,12 +88,20 @@ public class SecurityConfig {
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
 
+  // 관리자 접근 가능
+  private RequestMatcher[] requestAdminAuthenticated() {
+    List<RequestMatcher> requestMatchers = List.of(
+        antMatcher(GET, "/challenge/suggested/list")
+    );
+    return requestMatchers.toArray(RequestMatcher[]::new);
+  }
+
   // 유저 접근 가능
   private RequestMatcher[] requestAuthenticated() {
     List<RequestMatcher> requestMatchers = List.of(
         antMatcher(POST, "/member/withdraw"),
         antMatcher(POST, "/member/logout"),
-        antMatcher(POST, "/challenge/**")
+        antMatcher(POST, "/challenge/suggest")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
