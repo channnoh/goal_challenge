@@ -29,7 +29,7 @@ public class ChallengeController {
   public ResponseEntity<?> suggestChallenge(
       @RequestBody @Valid ChallengeSuggestRequest request) {
 
-    ChallengeSuggestResponse response = this.challengeService.suggestChallenge(request);
+    ChallengeSuggestResponse response = challengeService.suggestChallenge(request);
 
     return ResponseEntity.ok(response);
 

@@ -1,6 +1,7 @@
 package com.project.goalchallenge.global.config.security;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
@@ -91,7 +92,8 @@ public class SecurityConfig {
   // 관리자 접근 가능
   private RequestMatcher[] requestAdminAuthenticated() {
     List<RequestMatcher> requestMatchers = List.of(
-        antMatcher(GET, "/challenge/suggested/list")
+        antMatcher(GET, "/challenge/suggested/list"),
+        antMatcher(PATCH, "/challenge/suggested")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }

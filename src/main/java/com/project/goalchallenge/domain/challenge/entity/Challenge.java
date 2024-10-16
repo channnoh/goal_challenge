@@ -1,5 +1,8 @@
 package com.project.goalchallenge.domain.challenge.entity;
 
+import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.REGISTRATION_WAITING;
+import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.WAITING;
+
 import com.project.goalchallenge.domain.challenge.status.ChallengeStatus;
 import com.project.goalchallenge.domain.challenge.status.RegistrationStatus;
 import com.project.goalchallenge.domain.participant.entity.Participant;
@@ -51,14 +54,14 @@ public class Challenge {
 
   @Enumerated(EnumType.STRING)
   @Builder.Default
-  private ChallengeStatus challengeStatus = ChallengeStatus.REGISTRATION_WAITING;
+  private ChallengeStatus challengeStatus = REGISTRATION_WAITING;
 
   @CreatedDate
   private LocalDateTime suggestedDateTime; // 회원이 챌린지 건의한 날짜
 
   @Enumerated(EnumType.STRING)
   @Builder.Default
-  private RegistrationStatus registrationStatus = RegistrationStatus.WAITING; // 챌린지 등록상태
+  private RegistrationStatus registrationStatus = WAITING; // 챌린지 등록상태
 
   @Column(nullable = false)
   private Integer suggestedDurationDay; // 회원이 건의한 챌린지 기간
@@ -67,5 +70,18 @@ public class Challenge {
   @Builder.Default
   private List<Participant> participants = new ArrayList<>();
 
+  public void updateChallengeStartAndEndDate(LocalDateTime now, Integer duration) {
+    // 등록시점으로 부터 7일 후에 챌린지 신청마감 & 시작
+    this.challengeStartDateTime = now.plusDays(7);
+    // 챌린지 종료일자는 챌린지 시작일자 + 제안된 기간
+    this.challengeEndDateTime = now.plusDays(7 + duration);
+  }
 
+  public void updateChallengeStatus(ChallengeStatus challengeStatus) {
+    this.challengeStatus = challengeStatus;
+  }
+
+  public void updateChallengeRegistrationStatus(RegistrationStatus registrationStatus) {
+    this.registrationStatus = registrationStatus;
+  }
 }

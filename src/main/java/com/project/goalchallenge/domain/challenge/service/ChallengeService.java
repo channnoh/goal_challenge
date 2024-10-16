@@ -5,6 +5,7 @@ import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.RECRUITING;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.REGISTRATION_REJECT;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.APPROVE;
+import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.REJECT;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.WAITING;
 import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_HANDLED_CHALLENGE;
 import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_NOT_FOUND;
@@ -17,6 +18,7 @@ import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.exception.ChallengeException;
 import com.project.goalchallenge.domain.challenge.repository.ChallengeRepository;
+import com.project.goalchallenge.domain.challenge.status.RegistrationStatus;
 import com.project.goalchallenge.domain.participant.entity.Participant;
 import com.project.goalchallenge.domain.participant.status.ParticipantStatus;
 import java.time.LocalDate;
@@ -61,7 +63,7 @@ public class ChallengeService {
   @Transactional
   public RegistrationDto registerChallenge(RegistrationDto registrationDto) {
 
-    Challenge challenge = this.challengeRepository.findByChallengeName(
+    Challenge challenge = challengeRepository.findByChallengeName(
             registrationDto.getChallengeName())
         .orElseThrow(() -> new ChallengeException(CHALLENGE_NOT_FOUND));
 
@@ -69,23 +71,23 @@ public class ChallengeService {
       throw new ChallengeException(ALREADY_HANDLED_CHALLENGE);
     }
 
-    if (registrationDto.getRegistrationStatus() == APPROVE) {
-      Integer duration = challenge.getSuggestedDurationDay();
+    handleChallengeRequest(registrationDto.getRegistrationStatus(), challenge);
 
-      LocalDate now = LocalDate.now();
-      // 등록시점으로 부터 7일 후에 챌린지 신청마감 & 시작
-      challenge.setChallengeStartDateTime(now.atStartOfDay().plusDays(7));
-      // 챌린지 종료일자는 챌린지 시작일자 + 제안된 기간
-      challenge.setChallengeEndDateTime(now.atStartOfDay().plusDays(7 + duration));
-      // 챌린지가 등록 되는 시점에 챌린지 상태 RECRUITING 로 변경
-      challenge.setChallengeStatus(RECRUITING);
-    } else {
-      challenge.setChallengeStatus(REGISTRATION_REJECT);
-    }
-
-    challenge.setRegistrationStatus(registrationDto.getRegistrationStatus());
+    challenge.updateChallengeRegistrationStatus(registrationDto.getRegistrationStatus());
 
     return registrationDto;
+  }
+
+  // 관리자가 유저 요청 챌린지 처리
+  private static void handleChallengeRequest(RegistrationStatus registrationStatus,
+      Challenge challenge) {
+    if (registrationStatus == APPROVE) {
+      challenge.updateChallengeStartAndEndDate(LocalDate.now().atStartOfDay(),
+          challenge.getSuggestedDurationDay());
+      challenge.updateChallengeStatus(RECRUITING);
+    } else if (registrationStatus == REJECT) {
+      challenge.updateChallengeStatus(REGISTRATION_REJECT);
+    }
   }
 
   @Scheduled(cron = "0 0 0 * * *")
