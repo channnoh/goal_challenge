@@ -61,8 +61,7 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorizeRequests -> authorizeRequests
             .requestMatchers(anyRequest()).permitAll()
-            .requestMatchers(userRequestAuthenticated()).authenticated()
-            .requestMatchers(adminRequestAuthenticated()).hasRole("ADMIN")
+            .requestMatchers(requestAuthenticated()).authenticated()
         )
         // JWT Filter
         .addFilterBefore(new JwtAuthenticationFilter(tokenProvider),
@@ -81,19 +80,11 @@ public class SecurityConfig {
   }
 
   // 유저 접근 가능
-  private RequestMatcher[] userRequestAuthenticated() {
+  private RequestMatcher[] requestAuthenticated() {
     List<RequestMatcher> requestMatchers = List.of(
         antMatcher(POST, "/member/withdraw"),
         antMatcher(POST, "/member/logout"),
-        antMatcher(POST, "/challenge/suggest")
-    );
-    return requestMatchers.toArray(RequestMatcher[]::new);
-  }
-
-  // 관리자 접근 가능
-  private RequestMatcher[] adminRequestAuthenticated() {
-    List<RequestMatcher> requestMatchers = List.of(
-        antMatcher(POST, "/member/withdraw")
+        antMatcher(POST, "/challenge/**")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }

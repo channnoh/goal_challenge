@@ -26,5 +26,5 @@ spring:
 
   jwt:
    secret: Y2hhbi1zcHJpbmctYm9vdC1wcm9qZWN0LWdvYWwtY2hhbGxlbmdlLWp3dC1zZWNyZXQta2V5LXNldHRpbmctY2hlY2sK
-   access-token-expiration-time: 60000 # 60분(60*60*1000L) ms
+   access-token-expiration-time: 3600000 # 60분(60*60*1000L) ms
    refresh-token-expiration-time: 1209600000 # 14일(14*24*60*60*1000L) ms

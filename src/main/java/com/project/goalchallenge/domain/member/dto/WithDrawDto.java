@@ -5,14 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 public class WithDrawDto {
 
   @Getter
-  @Setter
-  @NoArgsConstructor
-  @AllArgsConstructor
   public static class WithDrawRequest {
 
     @NotBlank(message = "Email is required")
@@ -23,15 +19,14 @@ public class WithDrawDto {
   }
 
   @Getter
-  @Setter
+  @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  @Builder
   public static class WithDrawResponse {
 
     private String email;
 
-    public static WithDrawResponse withDrawEmail(String email) {
+    public static WithDrawResponse withDrawResponse(String email) {
       return WithDrawResponse.builder()
           .email(email)
           .build();

@@ -1,6 +1,7 @@
 package com.project.goalchallenge.domain.member.entity;
 
 import static com.project.goalchallenge.domain.member.status.MemberStatus.ACTIVE;
+import static com.project.goalchallenge.domain.member.status.MemberStatus.DEACTIVATED;
 
 import com.project.goalchallenge.domain.member.status.MemberStatus;
 import com.project.goalchallenge.domain.member.type.MemberType;
@@ -21,11 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -61,4 +60,10 @@ public class Member extends BaseEntity {
   @OneToMany(mappedBy = "member")
   @Builder.Default
   private List<Participant> participants = new ArrayList<>();
+
+  public void withDrawUpdate(LocalDateTime withdrawalDateTime) {
+    this.memberStatus = DEACTIVATED;
+    this.withdrawalDateTime = withdrawalDateTime;
+  }
+
 }

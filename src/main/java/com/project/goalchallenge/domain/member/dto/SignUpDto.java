@@ -46,7 +46,6 @@ public class SignUpDto {
   }
 
   @Getter
-  @Setter
   @NoArgsConstructor
   @AllArgsConstructor
   @Builder
