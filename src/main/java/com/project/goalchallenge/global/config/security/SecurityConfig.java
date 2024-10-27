@@ -95,7 +95,8 @@ public class SecurityConfig {
         antMatcher(POST, "/member/logout"),
         antMatcher(POST, "/challenge/suggest"),
         antMatcher(GET, "/challenge/suggested/list"),
-        antMatcher(PATCH, "/challenge/suggested")
+        antMatcher(PATCH, "/challenge/suggested"),
+        antMatcher(POST, "/participant/{challengeId}")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
