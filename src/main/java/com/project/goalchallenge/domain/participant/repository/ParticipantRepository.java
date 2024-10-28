@@ -1,6 +1,8 @@
 package com.project.goalchallenge.domain.participant.repository;
 
 import com.project.goalchallenge.domain.participant.entity.Participant;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,5 +18,8 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
   @Query("select count(*) from Participant p where p.member.id = :memberId")
   Integer countByMemberId(@Param("memberId") Long memberId);
+
+  @EntityGraph(attributePaths = {"challenge", "member"})
+  Optional<Participant> findById(Long participantId);
 
 }

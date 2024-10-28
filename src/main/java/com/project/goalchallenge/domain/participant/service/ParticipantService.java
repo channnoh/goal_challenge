@@ -2,6 +2,7 @@ package com.project.goalchallenge.domain.participant.service;
 
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.RECRUITING;
 import static com.project.goalchallenge.domain.participant.dto.ParticipantDto.fromEntity;
+import static com.project.goalchallenge.global.exception.ErrorCode.CAN_NOT_CANCEL_PARTICIPANT;
 import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_ALREADY_APPLIED;
 import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_LIMIT_EXCEEDED;
 import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_NOT_FOUND;
@@ -10,6 +11,8 @@ import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_PAR
 import static com.project.goalchallenge.global.exception.ErrorCode.FAIL_ACQUIRE_LOCK;
 import static com.project.goalchallenge.global.exception.ErrorCode.ID_NOT_FOUND;
 import static com.project.goalchallenge.global.exception.ErrorCode.LOCK_INTERRUPTED_ERROR;
+import static com.project.goalchallenge.global.exception.ErrorCode.NOT_PARTICIPANT_CHALLENGE;
+import static com.project.goalchallenge.global.exception.ErrorCode.PARTICIPANT_NOT_FOUND;
 
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.repository.ChallengeRepository;
@@ -93,5 +96,21 @@ public class ParticipantService {
       lock.unlock();
       log.info("unlock complete: {}", lock.getName());
     }
+  }
+
+  public void cancelChallengeParticipant(Long userId, Long participantId) {
+
+    Participant participant = participantRepository.findById(participantId)
+        .orElseThrow(() -> new ParticipantException(PARTICIPANT_NOT_FOUND));
+
+    if (!participant.getMember().getId().equals(userId)) {
+      throw new ParticipantException(NOT_PARTICIPANT_CHALLENGE);
+    }
+
+    if (!participant.getChallenge().getChallengeStatus().equals(RECRUITING)) {
+      throw new ParticipantException(CAN_NOT_CANCEL_PARTICIPANT);
+    }
+
+    participantRepository.delete(participant);
   }
 }

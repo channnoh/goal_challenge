@@ -1,5 +1,6 @@
 package com.project.goalchallenge.global.config.security;
 
+import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
@@ -96,7 +97,8 @@ public class SecurityConfig {
         antMatcher(POST, "/challenge/suggest"),
         antMatcher(GET, "/challenge/suggested/list"),
         antMatcher(PATCH, "/challenge/suggested"),
-        antMatcher(POST, "/participant/{challengeId}")
+        antMatcher(POST, "/participant/{challengeId}"),
+        antMatcher(DELETE, "/participant/{participantId}")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }
