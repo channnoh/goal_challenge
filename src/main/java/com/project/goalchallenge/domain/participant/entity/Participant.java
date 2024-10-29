@@ -5,6 +5,7 @@ import static com.project.goalchallenge.domain.participant.status.ParticipantSta
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.participant.status.ParticipantStatus;
+import com.project.goalchallenge.domain.record.entity.Record;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,6 +15,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,4 +51,7 @@ public class Participant {
   @ManyToOne
   @JoinColumn(name = "challenge_id")
   private Challenge challenge;
+
+  @OneToMany(mappedBy = "participant")
+  private List<Record> records = new ArrayList<>();
 }

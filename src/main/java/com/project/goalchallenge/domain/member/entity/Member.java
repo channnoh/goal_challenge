@@ -7,6 +7,7 @@ import com.project.goalchallenge.domain.member.status.MemberStatus;
 import com.project.goalchallenge.domain.member.type.MemberType;
 import com.project.goalchallenge.domain.model.BaseEntity;
 import com.project.goalchallenge.domain.participant.entity.Participant;
+import com.project.goalchallenge.domain.record.entity.Record;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -65,5 +66,8 @@ public class Member extends BaseEntity {
     this.memberStatus = DEACTIVATED;
     this.withdrawalDateTime = withdrawalDateTime;
   }
+
+  @OneToMany(mappedBy = "member")
+  private List<Record> recordList = new ArrayList<>();
 
 }
