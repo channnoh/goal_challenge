@@ -84,7 +84,8 @@ public class SecurityConfig {
   private RequestMatcher[] anyRequest() {
     List<RequestMatcher> requestMatchers = List.of(
         antMatcher(POST, "/member/signup"),
-        antMatcher(POST, "/member/login")
+        antMatcher(POST, "/member/login"),
+        antMatcher(GET, "/challenge/list")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }

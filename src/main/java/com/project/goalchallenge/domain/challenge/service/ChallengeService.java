@@ -1,5 +1,6 @@
 package com.project.goalchallenge.domain.challenge.service;
 
+import static com.project.goalchallenge.domain.challenge.dto.ChallengeListDto.ChallengeListResponse.fromEntity;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.IN_PROGRESS;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.NOT_ENOUGH_PARTICIPANTS;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.RECRUITING;
@@ -12,6 +13,8 @@ import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_NOT
 import static com.project.goalchallenge.global.exception.ErrorCode.DUPLICATED_CHALLENGE_NAME;
 
 import com.project.goalchallenge.domain.challenge.dto.ChallengeInfoDto;
+import com.project.goalchallenge.domain.challenge.dto.ChallengeListDto.ChallengeListRequest;
+import com.project.goalchallenge.domain.challenge.dto.ChallengeListDto.ChallengeListResponse;
 import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestRequest;
 import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestResponse;
 import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
@@ -26,6 +29,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -122,5 +126,19 @@ public class ChallengeService {
 
   private boolean isParticipantsEnough(Challenge challenge) {
     return challenge.getParticipants().size() >= 5;
+  }
+
+  public Page<ChallengeListResponse> getChallengeList
+      (ChallengeListRequest challengeListRequest, int page) {
+
+    Page<Challenge> challenges = challengeRepository.findAllByChallengeStatus(
+        PageRequest.of(page, 10, Sort.by("challengeStartDateTime")
+            .ascending()), challengeListRequest.getChallengeStatus());
+
+    List<ChallengeListResponse> challengeList = challenges.getContent().stream()
+        .map(challenge -> fromEntity(challenge, challenge.getParticipants().size())).toList();
+    // batch_size in 쿼리 사용
+
+    return new PageImpl<>(challengeList);
   }
 }

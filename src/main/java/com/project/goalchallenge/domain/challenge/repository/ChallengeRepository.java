@@ -18,7 +18,12 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
   Optional<Challenge> findByChallengeName(String challengeName);
 
-  Page<Challenge> findAllByRegistrationStatus(Pageable pageable, RegistrationStatus registrationStatus);
+  Page<Challenge> findAllByRegistrationStatus(Pageable pageable,
+      RegistrationStatus registrationStatus);
 
-  List<Challenge> findByChallengeStatusAndChallengeStartDateTime(ChallengeStatus challengeStatus, LocalDateTime challengeStartDateTime);
+  List<Challenge> findByChallengeStatusAndChallengeStartDateTime(ChallengeStatus challengeStatus,
+      LocalDateTime challengeStartDateTime);
+
+  Page<Challenge> findAllByChallengeStatus(Pageable pageable, ChallengeStatus challengeStatus);
+
 }

@@ -1,5 +1,6 @@
 package com.project.goalchallenge.domain.challenge.controller;
 
+import com.project.goalchallenge.domain.challenge.dto.ChallengeListDto.ChallengeListRequest;
 import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestRequest;
 import com.project.goalchallenge.domain.challenge.dto.ChallengeSuggestDto.ChallengeSuggestResponse;
 import com.project.goalchallenge.domain.challenge.dto.RegistrationDto;
@@ -49,5 +50,11 @@ public class ChallengeController {
     return ResponseEntity.ok(challengeService.registerChallenge(registrationDto));
   }
 
+  @GetMapping("/list")
+  public ResponseEntity<?> challengeList(
+      @RequestBody ChallengeListRequest challengeListRequest,
+      @RequestParam(defaultValue = "0") Integer page) {
+    return ResponseEntity.ok(challengeService.getChallengeList(challengeListRequest, page));
+  }
 
 }
