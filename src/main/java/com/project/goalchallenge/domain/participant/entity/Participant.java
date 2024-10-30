@@ -53,5 +53,6 @@ public class Participant {
   private Challenge challenge;
 
   @OneToMany(mappedBy = "participant")
+  @Builder.Default
   private List<Record> records = new ArrayList<>();
 }
