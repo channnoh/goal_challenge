@@ -98,5 +98,17 @@ public class RecordService {
     }
   }
 
+  @Transactional
+  public void deleteRecord(Long recordId, Long userId) {
 
+    Record record = recordRepository.findById(recordId)
+        .orElseThrow(() -> new RecordException(RECORD_NOT_FOUND));
+
+    if (!Objects.equals(record.getMember().getId(), userId)) {
+      throw new RecordException(FORBIDDEN_UPDATE_RECORD);
+    }
+
+    s3Service.deleteFile(record.getImageRecord());
+    recordRepository.delete(record);
+  }
 }
