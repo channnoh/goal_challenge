@@ -99,7 +99,8 @@ public class SecurityConfig {
         antMatcher(GET, "/challenge/suggested/list"),
         antMatcher(PATCH, "/challenge/suggested"),
         antMatcher(POST, "/participant/{challengeId}"),
-        antMatcher(DELETE, "/participant/{participantId}")
+        antMatcher(DELETE, "/participant/{participantId}"),
+        antMatcher(POST, "/record/{challengeId}")
     );
     return requestMatchers.toArray(RequestMatcher[]::new);
   }

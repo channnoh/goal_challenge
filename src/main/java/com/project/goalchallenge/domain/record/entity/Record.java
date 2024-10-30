@@ -1,6 +1,5 @@
 package com.project.goalchallenge.domain.record.entity;
 
-import static com.project.goalchallenge.domain.record.status.RecordVisibility.PRIVATE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -19,9 +18,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -39,11 +38,12 @@ public class Record extends BaseEntity {
   @Column(nullable = false)
   private String textRecord;
 
+  @Setter
   private String imageRecord;
 
-  @Default
+  @Column(nullable = false)
   @Enumerated(EnumType.STRING)
-  private RecordVisibility recordVisibility = PRIVATE;
+  private RecordVisibility recordVisibility;
 
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")
@@ -52,4 +52,11 @@ public class Record extends BaseEntity {
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "participant_id")
   private Participant participant;
+
+  public void registerRecord(Member member, Participant participant) {
+    this.member = member;
+    this.participant = participant;
+    member.getRecordList().add(this);
+    participant.getRecords().add(this);
+  }
 }

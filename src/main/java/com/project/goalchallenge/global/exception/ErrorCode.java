@@ -11,6 +11,7 @@ public enum ErrorCode {
   INTERNAL_SERVER_ERROR(500, "내부 서버 오류가 발생했습니다."),
   LOCK_INTERRUPTED_ERROR(500, "Lock 인터럽트가 발생했습니다."),
   FAIL_ACQUIRE_LOCK(500, "Lock 획득에 실패했습니다."),
+  S3_IOEXCEPTION(500, "S3 업로드 에러가 발생했습니다."),
 
   // Valid Error
   BAD_REQUEST_VALID_ERROR(400, "유효성 검사에 실패했습니다."),
@@ -34,6 +35,11 @@ public enum ErrorCode {
   NOT_PARTICIPANT_CHALLENGE(409, "참여중인 챌린지가 아닙니다."),
   CAN_NOT_CANCEL_PARTICIPANT(409, "챌린지 참여 취소 기간이 아닙니다."),
   PARTICIPANT_NOT_FOUND(409, "참여 정보를 찾을 수 없습니다."),
+
+  // Record Error
+  NOT_CORRECT_PARTICIPANT_STATUS(400, "진행중이지 않은 챌린지 참여 상태입니다."),
+  NOT_CORRECT_CHALLENGE_RECORD_DATE(400, "챌린지 기록날짜가 올바르지 않습니다."),
+  ALREADY_REGISTER_CHALLENGE_RECORD(400, "이미 챌린지를 기록했습니다."),
 
   // JwtFilterAuthenticationError
   UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),

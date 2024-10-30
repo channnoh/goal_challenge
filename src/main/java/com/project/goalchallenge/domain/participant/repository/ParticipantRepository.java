@@ -22,4 +22,6 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
   @EntityGraph(attributePaths = {"challenge", "member"})
   Optional<Participant> findById(Long participantId);
 
+  @EntityGraph(attributePaths = {"member", "challenge"})
+  Optional<Participant> findByMemberIdAndChallengeId(Long userId, Long challengeId);
 }

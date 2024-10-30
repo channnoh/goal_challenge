@@ -7,6 +7,7 @@ import static com.project.goalchallenge.global.exception.ErrorCode.INTERNAL_SERV
 import com.project.goalchallenge.domain.challenge.exception.ChallengeException;
 import com.project.goalchallenge.domain.member.exception.MemberException;
 import com.project.goalchallenge.domain.participant.exception.ParticipantException;
+import com.project.goalchallenge.domain.record.exception.RecordException;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -37,6 +38,14 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(ParticipantException.class)
   public ErrorResponse handleParticipantException(ParticipantException e) {
+    log.error("Exception \"{}({})\" is occurred.", e.getErrorCode(), e.getErrorCode().getMessage());
+
+    return new ErrorResponse(e.getErrorCode(), e.getErrorCode().getStatus(),
+        e.getErrorCode().getMessage());
+  }
+
+  @ExceptionHandler(RecordException.class)
+  public ErrorResponse handleRecordException(RecordException e) {
     log.error("Exception \"{}({})\" is occurred.", e.getErrorCode(), e.getErrorCode().getMessage());
 
     return new ErrorResponse(e.getErrorCode(), e.getErrorCode().getStatus(),
