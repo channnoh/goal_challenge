@@ -40,6 +40,8 @@ public enum ErrorCode {
   NOT_CORRECT_PARTICIPANT_STATUS(400, "진행중이지 않은 챌린지 참여 상태입니다."),
   NOT_CORRECT_CHALLENGE_RECORD_DATE(400, "챌린지 기록날짜가 올바르지 않습니다."),
   ALREADY_REGISTER_CHALLENGE_RECORD(400, "이미 챌린지를 기록했습니다."),
+  RECORD_NOT_FOUND(400, "존재하지 않는 챌린지 기록입니다."),
+  FORBIDDEN_UPDATE_RECORD(403, "챌린지 기록을 수정할 수 있는 권한이 없습니다."),
 
   // JwtFilterAuthenticationError
   UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),

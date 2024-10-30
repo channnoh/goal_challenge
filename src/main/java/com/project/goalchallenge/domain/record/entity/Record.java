@@ -35,12 +35,14 @@ public class Record extends BaseEntity {
   @Column(name = "record_id")
   private Long id;
 
+  @Setter
   @Column(nullable = false)
   private String textRecord;
 
   @Setter
   private String imageRecord;
 
+  @Setter
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
   private RecordVisibility recordVisibility;
