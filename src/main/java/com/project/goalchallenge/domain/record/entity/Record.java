@@ -1,6 +1,7 @@
 package com.project.goalchallenge.domain.record.entity;
 
 import static com.project.goalchallenge.domain.record.status.RecordVisibility.PRIVATE;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import com.project.goalchallenge.domain.member.entity.Member;
@@ -44,11 +45,11 @@ public class Record extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private RecordVisibility recordVisibility = PRIVATE;
 
-  @ManyToOne
+  @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @ManyToOne
+  @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "participant_id")
   private Participant participant;
 }

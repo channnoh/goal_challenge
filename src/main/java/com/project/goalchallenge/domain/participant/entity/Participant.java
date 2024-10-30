@@ -1,6 +1,7 @@
 package com.project.goalchallenge.domain.participant.entity;
 
 import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.WAITING;
+import static jakarta.persistence.FetchType.LAZY;
 
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.member.entity.Member;
@@ -44,11 +45,11 @@ public class Participant {
   @Builder.Default
   private double ChallengeAchievementRate = 0.0;
 
-  @ManyToOne
+  @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @ManyToOne
+  @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "challenge_id")
   private Challenge challenge;
 
