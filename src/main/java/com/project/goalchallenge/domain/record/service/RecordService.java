@@ -75,6 +75,12 @@ public class RecordService {
     record.registerRecord(participant.getMember(), participant);
     recordRepository.save(record);
 
+    Integer numOfRecord = participantRepository.countByMemberIdAndChallengeId(participant.getMember().getId(),
+        participant.getChallenge().getId());
+
+    double achievementRate =  Math.round(((double) numOfRecord / (participant.getChallenge().getSuggestedDurationDay()) * 10000)) / 100.0;
+    participant.setChallengeAchievementRate(achievementRate);
+
     return fromEntity(
         participant.getChallenge().getChallengeName(), LocalDateTime.now());
   }
