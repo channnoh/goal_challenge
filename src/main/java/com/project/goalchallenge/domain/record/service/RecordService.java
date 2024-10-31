@@ -11,6 +11,7 @@ import static com.project.goalchallenge.global.exception.ErrorCode.RECORD_NOT_FO
 
 import com.project.goalchallenge.domain.participant.entity.Participant;
 import com.project.goalchallenge.domain.participant.repository.ParticipantRepository;
+import com.project.goalchallenge.domain.record.dto.RecordListDto.RecordListResponse;
 import com.project.goalchallenge.domain.record.dto.RegisterRecordDto.RegisterRecordRequest;
 import com.project.goalchallenge.domain.record.dto.RegisterRecordDto.RegisterRecordResponse;
 import com.project.goalchallenge.domain.record.dto.UpdateRecordDto.UpdateRecordRequest;
@@ -23,6 +24,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,5 +120,23 @@ public class RecordService {
 
     s3Service.deleteFile(record.getImageRecord());
     recordRepository.delete(record);
+  }
+
+  public Page<RecordListResponse> getMyRecordList(Long participantId, Long userId, int page) {
+
+    Page<Record> records = recordRepository.findAllByParticipantIdAndMemberId(
+        PageRequest.of(page, 10, Sort.by("createdDateTime").descending()), participantId, userId);
+
+    Page<RecordListResponse> myRecordList =
+        records.map(record ->
+            RecordListResponse.builder()
+                .challengeName(record.getParticipant().getChallenge().getChallengeName())
+                .textRecord(record.getTextRecord())
+                .imageRecord(record.getImageRecord())
+                .recordVisibility(record.getRecordVisibility())
+                .challengeAchievementRate(record.getParticipant().getChallengeAchievementRate())
+                .build());
+
+    return myRecordList;
   }
 }
