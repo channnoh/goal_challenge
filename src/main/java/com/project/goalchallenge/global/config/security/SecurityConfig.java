@@ -100,6 +100,7 @@ public class SecurityConfig {
         antMatcher(PATCH, "/challenge/suggested"),
         antMatcher(POST, "/participant/{challengeId}"),
         antMatcher(DELETE, "/participant/{participantId}"),
+        antMatcher(GET, "/participant/list"),
         antMatcher(POST, "/record/{challengeId}"),
         antMatcher(PATCH, "/record/{recordId}"),
         antMatcher(DELETE, "/record/{recordId}"),

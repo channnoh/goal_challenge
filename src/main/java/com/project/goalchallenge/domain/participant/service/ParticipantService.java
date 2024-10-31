@@ -13,21 +13,28 @@ import static com.project.goalchallenge.global.exception.ErrorCode.ID_NOT_FOUND;
 import static com.project.goalchallenge.global.exception.ErrorCode.LOCK_INTERRUPTED_ERROR;
 import static com.project.goalchallenge.global.exception.ErrorCode.NOT_PARTICIPANT_CHALLENGE;
 import static com.project.goalchallenge.global.exception.ErrorCode.PARTICIPANT_NOT_FOUND;
+import static org.springframework.data.domain.PageRequest.of;
 
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.repository.ChallengeRepository;
 import com.project.goalchallenge.domain.member.entity.Member;
+import com.project.goalchallenge.domain.member.exception.MemberException;
 import com.project.goalchallenge.domain.member.repository.MemberRepository;
+import com.project.goalchallenge.domain.participant.dto.MyParticipantListDto.MyParticipantListResponse;
 import com.project.goalchallenge.domain.participant.dto.ParticipantDto;
 import com.project.goalchallenge.domain.participant.entity.Participant;
 import com.project.goalchallenge.domain.participant.exception.ParticipantException;
 import com.project.goalchallenge.domain.participant.repository.ParticipantRepository;
 import com.project.goalchallenge.global.exception.SystemException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -112,5 +119,32 @@ public class ParticipantService {
     }
 
     participantRepository.delete(participant);
+  }
+
+  public Page<MyParticipantListResponse> getMyParticipantChallengeList(Long userId, int page) {
+
+    Pageable pageable = of(page, 10);
+
+    Page<Participant> myParticipants
+        = participantRepository.findByMemberId(pageable, userId);
+
+    List<MyParticipantListResponse> myParticipantList =
+        myParticipants.getContent().stream().map(participant -> {
+
+          Challenge challenge = participant.getChallenge();
+
+          return MyParticipantListResponse.builder()
+              .challengeName(challenge.getChallengeName())
+              .challengePurpose(challenge.getChallengePurpose())
+              .challengeStatus(challenge.getChallengeStatus())
+              .challengeStartDateTime(challenge.getChallengeStartDateTime())
+              .challengeEndDateTime(challenge.getChallengeEndDateTime())
+              .participantStatus(participant.getParticipantStatus())
+              .challengeAchievementRate(participant.getChallengeAchievementRate())
+              .build();
+
+        }).toList();
+
+    return new PageImpl<>(myParticipantList, pageable, myParticipants.getTotalElements());
   }
 }

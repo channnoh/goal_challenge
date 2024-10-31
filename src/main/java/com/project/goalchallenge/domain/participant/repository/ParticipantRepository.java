@@ -2,6 +2,8 @@ package com.project.goalchallenge.domain.participant.repository;
 
 import com.project.goalchallenge.domain.participant.entity.Participant;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,6 +26,9 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
 
   @EntityGraph(attributePaths = {"member", "challenge"})
   Optional<Participant> findByMemberIdAndChallengeId(Long userId, Long challengeId);
+
   @Query("select count(*) from Participant p where p.member.id = :memberId and p.challenge.id = :challengeId")
   Integer countByMemberIdAndChallengeId(Long memberId, Long challengeId);
+
+  Page<Participant> findByMemberId(Pageable pageable, Long memberId);
 }
