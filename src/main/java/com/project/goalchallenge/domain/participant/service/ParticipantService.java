@@ -18,8 +18,8 @@ import static org.springframework.data.domain.PageRequest.of;
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.challenge.repository.ChallengeRepository;
 import com.project.goalchallenge.domain.member.entity.Member;
-import com.project.goalchallenge.domain.member.exception.MemberException;
 import com.project.goalchallenge.domain.member.repository.MemberRepository;
+import com.project.goalchallenge.domain.participant.dto.ChangeVisibilityDto.ChangeVisibilityRequest;
 import com.project.goalchallenge.domain.participant.dto.MyParticipantListDto.MyParticipantListResponse;
 import com.project.goalchallenge.domain.participant.dto.ParticipantDto;
 import com.project.goalchallenge.domain.participant.entity.Participant;
@@ -105,6 +105,20 @@ public class ParticipantService {
     }
   }
 
+  @Transactional
+  public void changeVisibility(Long userId, Long participantId, ChangeVisibilityRequest request) {
+
+    Participant participant = participantRepository.findById(participantId)
+        .orElseThrow(() -> new ParticipantException(PARTICIPANT_NOT_FOUND));
+
+    if (!participant.getMember().getId().equals(userId)) {
+      throw new ParticipantException(NOT_PARTICIPANT_CHALLENGE);
+    }
+
+    participant.setVisibilityStatus(request.getVisibilityStatus());
+  }
+
+  @Transactional
   public void cancelChallengeParticipant(Long userId, Long participantId) {
 
     Participant participant = participantRepository.findById(participantId)

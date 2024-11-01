@@ -1,11 +1,13 @@
 package com.project.goalchallenge.domain.participant.entity;
 
 import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.WAITING;
+import static com.project.goalchallenge.domain.participant.status.VisibilityStatus.PUBLIC;
 import static jakarta.persistence.FetchType.LAZY;
 
 import com.project.goalchallenge.domain.challenge.entity.Challenge;
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.participant.status.ParticipantStatus;
+import com.project.goalchallenge.domain.participant.status.VisibilityStatus;
 import com.project.goalchallenge.domain.record.entity.Record;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,6 +47,12 @@ public class Participant {
 
   @Builder.Default
   private double ChallengeAchievementRate = 0.0;
+
+  @Setter
+  @Default
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private VisibilityStatus visibilityStatus = PUBLIC;
 
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")
