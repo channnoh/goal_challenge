@@ -20,6 +20,9 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
       + "and day (r.createdDateTime) = day (:recordDate)")
   boolean existsRecordByParticipantIdAndRecordDate(Long participantId, LocalDate recordDate);
 
+  @Query("select count(*) from Record r where r.participant.id = :participantId")
+  Integer countByParticipantId(Long participantId);
+
   @EntityGraph(attributePaths = {"participant"})
   Page<Record> findAllByParticipantIdAndMemberId(Pageable pageable, Long participantId,
       Long memberId);
