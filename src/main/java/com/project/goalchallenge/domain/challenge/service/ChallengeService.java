@@ -94,35 +94,41 @@ public class ChallengeService {
     }
   }
 
+  @Transactional
   @Scheduled(cron = "0 0 0 * * *")
   public void challengeStart() {
 
     List<Challenge> challengeList = challengeRepository.findByChallengeStatusAndChallengeStartDateTime(
-        RECRUITING,
-        LocalDate.now().atStartOfDay().plusDays(7));
+        RECRUITING, LocalDate.now().atStartOfDay().plusDays(7));
 
-    if (challengeList.isEmpty()) {
-      log.info("No Challenge");
-    }
+    updateStartOfChallenge(challengeList);
+  }
+
+  private void updateStartOfChallenge(List<Challenge> challengeList) {
 
     for (Challenge challenge : challengeList) {
       if (!isParticipantsEnough(challenge)) {
         challenge.setChallengeStatus(NOT_ENOUGH_PARTICIPANTS);
         log.info("Challenge: {} is {}", challenge.getChallengeName(), NOT_ENOUGH_PARTICIPANTS);
 
-        for (Participant participant : challenge.getParticipants()) {
-          participant.setParticipantStatus(ParticipantStatus.FAIL);
-        }
+        updateStartOfChallengeParticipant(challenge, FAIL);
       } else {
         challenge.setChallengeStatus(IN_PROGRESS);
         log.info("Challenge: {} is {}", challenge.getChallengeName(), IN_PROGRESS);
 
-        for (Participant participant : challenge.getParticipants()) {
-          participant.setParticipantStatus(ParticipantStatus.IN_PROGRESS);
-        }
+        updateStartOfChallengeParticipant(challenge, ParticipantStatus.IN_PROGRESS);
       }
     }
   }
+
+  private static void updateStartOfChallengeParticipant(Challenge challenge,
+      ParticipantStatus participantStatus) {
+
+    for (Participant participant : challenge.getParticipants()) {
+      participant.setParticipantStatus(participantStatus);
+    }
+  }
+
 
   private boolean isParticipantsEnough(Challenge challenge) {
     return challenge.getParticipants().size() >= 5;
