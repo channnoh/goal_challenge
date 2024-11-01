@@ -42,6 +42,7 @@ public enum ErrorCode {
   ALREADY_REGISTER_CHALLENGE_RECORD(400, "이미 챌린지를 기록했습니다."),
   RECORD_NOT_FOUND(400, "존재하지 않는 챌린지 기록입니다."),
   FORBIDDEN_UPDATE_RECORD(403, "챌린지 기록을 수정할 수 있는 권한이 없습니다."),
+  CHALLENGE_RECORD_PRIVATE(403, "비공개 설정된 챌린지 기록입니다."),
 
   // JwtFilterAuthenticationError
   UNAUTHORIZED(401, "인증되지 않은 사용자입니다."),

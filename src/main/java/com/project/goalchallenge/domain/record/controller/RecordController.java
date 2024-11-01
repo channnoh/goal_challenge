@@ -62,4 +62,11 @@ public class RecordController {
 
     return ResponseEntity.ok(recordService.getMyRecordList(participantId, userId, page));
   }
+
+  @GetMapping("/list/other/{participantId}")
+  public ResponseEntity<?> getOtherRecord(
+      @PathVariable Long participantId, @RequestParam(defaultValue = "0") Integer page) {
+
+    return ResponseEntity.ok(recordService.getOtherRecordList(participantId, page));
+  }
 }

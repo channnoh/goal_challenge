@@ -21,5 +21,8 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
   boolean existsRecordByParticipantIdAndRecordDate(Long participantId, LocalDate recordDate);
 
   @EntityGraph(attributePaths = {"participant"})
-  Page<Record> findAllByParticipantIdAndMemberId(Pageable pageable, Long participantId, Long memberId);
+  Page<Record> findAllByParticipantIdAndMemberId(Pageable pageable, Long participantId,
+      Long memberId);
+
+  Page<Record> findAllByParticipantId(Long participantId, Pageable pageable);
 }

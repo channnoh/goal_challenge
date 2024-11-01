@@ -1,16 +1,22 @@
 package com.project.goalchallenge.domain.record.service;
 
 import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.IN_PROGRESS;
+import static com.project.goalchallenge.domain.participant.status.VisibilityStatus.PRIVATE;
 import static com.project.goalchallenge.domain.record.dto.RegisterRecordDto.RegisterRecordResponse.fromEntity;
 import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_REGISTER_CHALLENGE_RECORD;
+import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_RECORD_PRIVATE;
 import static com.project.goalchallenge.global.exception.ErrorCode.FORBIDDEN_UPDATE_RECORD;
 import static com.project.goalchallenge.global.exception.ErrorCode.NOT_CORRECT_CHALLENGE_RECORD_DATE;
 import static com.project.goalchallenge.global.exception.ErrorCode.NOT_CORRECT_PARTICIPANT_STATUS;
 import static com.project.goalchallenge.global.exception.ErrorCode.NOT_PARTICIPANT_CHALLENGE;
+import static com.project.goalchallenge.global.exception.ErrorCode.PARTICIPANT_NOT_FOUND;
 import static com.project.goalchallenge.global.exception.ErrorCode.RECORD_NOT_FOUND;
+import static org.springframework.data.domain.PageRequest.of;
 
 import com.project.goalchallenge.domain.participant.entity.Participant;
+import com.project.goalchallenge.domain.participant.exception.ParticipantException;
 import com.project.goalchallenge.domain.participant.repository.ParticipantRepository;
+import com.project.goalchallenge.domain.record.dto.OthersRecordListDto.OthersRecordListResponse;
 import com.project.goalchallenge.domain.record.dto.RecordListDto.RecordListResponse;
 import com.project.goalchallenge.domain.record.dto.RegisterRecordDto.RegisterRecordRequest;
 import com.project.goalchallenge.domain.record.dto.RegisterRecordDto.RegisterRecordResponse;
@@ -25,7 +31,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -123,7 +128,7 @@ public class RecordService {
   public Page<RecordListResponse> getMyRecordList(Long participantId, Long userId, int page) {
 
     Page<Record> records = recordRepository.findAllByParticipantIdAndMemberId(
-        PageRequest.of(page, 10, Sort.by("createdDateTime").descending()), participantId, userId);
+        of(page, 10, Sort.by("createdDateTime").descending()), participantId, userId);
 
     return records.map(record ->
         RecordListResponse.builder()
@@ -132,5 +137,32 @@ public class RecordService {
             .imageRecord(record.getImageRecord())
             .challengeAchievementRate(record.getParticipant().getChallengeAchievementRate())
             .build());
+  }
+
+  public Page<OthersRecordListResponse> getOtherRecordList(Long participantId, int page) {
+
+    Participant participant = participantRepository.findById(participantId)
+        .orElseThrow(() -> new ParticipantException(PARTICIPANT_NOT_FOUND));
+
+    if (participant.getVisibilityStatus() == PRIVATE) {
+      throw new RecordException(CHALLENGE_RECORD_PRIVATE);
+    }
+
+    Page<Record> otherParticipantRecordsPage = recordRepository.findAllByParticipantId(
+        participantId, of(page, 10, Sort.by("createdDateTime").descending()));
+
+    return otherParticipantRecordsPage.map(
+        record ->
+            OthersRecordListResponse.builder()
+                .username(participant.getMember().getUsername())
+                .challengeName(participant.getChallenge().getChallengeName())
+                .challengePurpose(participant.getChallenge().getChallengePurpose())
+                .challengeStatus(participant.getChallenge().getChallengeStatus())
+                .challengeAchievementRate(participant.getChallengeAchievementRate())
+                .textRecord(record.getTextRecord())
+                .imageRecord(record.getImageRecord())
+                .recordDateTime(record.getUpdatedDateTime())
+                .participantStatus(record.getParticipant().getParticipantStatus())
+                .build());
   }
 }
