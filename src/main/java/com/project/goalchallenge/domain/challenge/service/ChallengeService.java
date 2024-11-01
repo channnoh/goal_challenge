@@ -1,6 +1,7 @@
 package com.project.goalchallenge.domain.challenge.service;
 
 import static com.project.goalchallenge.domain.challenge.dto.ChallengeListDto.ChallengeListResponse.fromEntity;
+import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.COMPLETED;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.IN_PROGRESS;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.NOT_ENOUGH_PARTICIPANTS;
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.RECRUITING;
@@ -8,6 +9,8 @@ import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.APPROVE;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.REJECT;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.WAITING;
+import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.FAIL;
+import static com.project.goalchallenge.domain.participant.status.ParticipantStatus.SUCCESS;
 import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_HANDLED_CHALLENGE;
 import static com.project.goalchallenge.global.exception.ErrorCode.CHALLENGE_NOT_FOUND;
 import static com.project.goalchallenge.global.exception.ErrorCode.DUPLICATED_CHALLENGE_NAME;
@@ -132,6 +135,40 @@ public class ChallengeService {
 
   private boolean isParticipantsEnough(Challenge challenge) {
     return challenge.getParticipants().size() >= 5;
+  }
+
+  @Transactional
+  @Scheduled(cron = "0 0 0 * * *")
+  public void challengeEnd() {
+
+    LocalDate challengeEndDay = LocalDate.now();
+
+    List<Challenge> challengeEndList
+        = challengeRepository.findByChallengeStatusAndChallengeEndDateTime
+        (IN_PROGRESS, challengeEndDay.atStartOfDay());
+
+    updateEndOfChallengeStatus(challengeEndList);
+  }
+
+  private static void updateEndOfChallengeStatus(List<Challenge> challengeEndList) {
+    for (Challenge challenge : challengeEndList) {
+      challenge.setChallengeStatus(COMPLETED);
+
+      List<Participant> participants = challenge.getParticipants();
+
+      updateParticipantStatusSuccessOrFail(participants);
+    }
+  }
+
+  private static void updateParticipantStatusSuccessOrFail(List<Participant> participants) {
+
+    for (Participant participant : participants) {
+      if (participant.getChallengeAchievementRate() == 100.0) {
+        participant.setParticipantStatus(SUCCESS);
+      } else {
+        participant.setParticipantStatus(FAIL);
+      }
+    }
   }
 
   public Page<ChallengeListResponse> getChallengeList
