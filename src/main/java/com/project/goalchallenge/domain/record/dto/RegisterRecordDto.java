@@ -1,7 +1,6 @@
 package com.project.goalchallenge.domain.record.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.goalchallenge.domain.record.status.RecordVisibility;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -30,8 +29,6 @@ public class RegisterRecordDto {
     @NotNull(message = "Record Date is required")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate recordDate;
-
-    private RecordVisibility recordVisibility;
 
   }
 

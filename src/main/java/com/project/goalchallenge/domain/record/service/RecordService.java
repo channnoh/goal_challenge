@@ -64,7 +64,6 @@ public class RecordService {
 
     Record record = Record.builder()
         .textRecord(request.getTextRecord())
-        .recordVisibility(request.getRecordVisibility())
         .build();
 
     if (request.getImageRecord() != null) {
@@ -105,10 +104,6 @@ public class RecordService {
     if (request.getTextRecord() != null) {
       record.setTextRecord(request.getTextRecord());
     }
-
-    if (request.getRecordVisibility() != null) {
-      record.setRecordVisibility(request.getRecordVisibility());
-    }
   }
 
   @Transactional
@@ -130,16 +125,12 @@ public class RecordService {
     Page<Record> records = recordRepository.findAllByParticipantIdAndMemberId(
         PageRequest.of(page, 10, Sort.by("createdDateTime").descending()), participantId, userId);
 
-    Page<RecordListResponse> myRecordList =
-        records.map(record ->
-            RecordListResponse.builder()
-                .challengeName(record.getParticipant().getChallenge().getChallengeName())
-                .textRecord(record.getTextRecord())
-                .imageRecord(record.getImageRecord())
-                .recordVisibility(record.getRecordVisibility())
-                .challengeAchievementRate(record.getParticipant().getChallengeAchievementRate())
-                .build());
-
-    return myRecordList;
+    return records.map(record ->
+        RecordListResponse.builder()
+            .challengeName(record.getParticipant().getChallenge().getChallengeName())
+            .textRecord(record.getTextRecord())
+            .imageRecord(record.getImageRecord())
+            .challengeAchievementRate(record.getParticipant().getChallengeAchievementRate())
+            .build());
   }
 }

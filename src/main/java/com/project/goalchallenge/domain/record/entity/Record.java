@@ -6,11 +6,8 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import com.project.goalchallenge.domain.member.entity.Member;
 import com.project.goalchallenge.domain.model.BaseEntity;
 import com.project.goalchallenge.domain.participant.entity.Participant;
-import com.project.goalchallenge.domain.record.status.RecordVisibility;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -41,11 +38,6 @@ public class Record extends BaseEntity {
 
   @Setter
   private String imageRecord;
-
-  @Setter
-  @Column(nullable = false)
-  @Enumerated(EnumType.STRING)
-  private RecordVisibility recordVisibility;
 
   @ManyToOne(fetch = LAZY)
   @JoinColumn(name = "member_id")

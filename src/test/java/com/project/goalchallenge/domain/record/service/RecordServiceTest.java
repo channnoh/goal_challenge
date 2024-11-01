@@ -2,7 +2,6 @@ package com.project.goalchallenge.domain.record.service;
 
 import static com.project.goalchallenge.domain.challenge.status.ChallengeStatus.IN_PROGRESS;
 import static com.project.goalchallenge.domain.challenge.status.RegistrationStatus.APPROVE;
-import static com.project.goalchallenge.domain.record.status.RecordVisibility.PRIVATE;
 import static com.project.goalchallenge.global.exception.ErrorCode.ALREADY_REGISTER_CHALLENGE_RECORD;
 import static com.project.goalchallenge.global.exception.ErrorCode.NOT_CORRECT_CHALLENGE_RECORD_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,7 +72,6 @@ class RecordServiceTest {
     RegisterRecordRequest recordRequest = RegisterRecordRequest.builder()
         .textRecord("test 용 기록")
         .recordDate(LocalDate.now())
-        .recordVisibility(PRIVATE)
         .build();
 
     //when
@@ -116,7 +114,6 @@ class RecordServiceTest {
     RegisterRecordRequest recordRequest = RegisterRecordRequest.builder()
         .textRecord("test 용 기록")
         .recordDate(LocalDate.parse("2024-05-30"))
-        .recordVisibility(PRIVATE)
         .build();
 
     //when
@@ -160,7 +157,6 @@ class RecordServiceTest {
     RegisterRecordRequest recordRequest = RegisterRecordRequest.builder()
         .textRecord("test 용 기록")
         .recordDate(LocalDate.now())
-        .recordVisibility(PRIVATE)
         .build();
 
     recordService.registerRecord(
@@ -169,7 +165,6 @@ class RecordServiceTest {
     RegisterRecordRequest duplicatedRecordRequest = RegisterRecordRequest.builder()
         .textRecord("test 용 기록2")
         .recordDate(LocalDate.now())
-        .recordVisibility(PRIVATE)
         .build();
 
     //when
