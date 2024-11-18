@@ -50,57 +50,26 @@ class ParticipantServiceTest {
     ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
     CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
-    Future<Long> createMember
-        = executorService.submit(() -> {
-      Member member = Member.builder()
-          .username("user")
-          .password("test123!")
-          .email("test@naver.com")
-          .memberType(ROLE_USER)
-          .build();
-
-      return memberRepository.save(member).getId();
-    });
-
     Future<Long> createChallenge
         = executorService.submit(() -> {
 
-      Challenge challenge = new Challenge();
-      challenge.setChallengeName("test");
-      challenge.setChallengePurpose("test");
-      challenge.setSuggestedDurationDay(10);
-
+      Challenge challenge = saveChallenge();
       return challengeRepository.save(challenge).getId();
     });
 
-    final Long memberId = createMember.get();
     final Long challengeId = createChallenge.get();
 
     for (int i = 0; i < numberOfThreads; i++) {
       executorService.submit(() -> {
+
+        Long memberId = saveMember(Thread.currentThread().getId());
         try {
-          Member member = memberRepository.findById(memberId)
-              .orElseThrow(() -> new MemberException(ID_NOT_FOUND));
-
-          Challenge challenge = challengeRepository.findById(challengeId)
-              .orElseThrow(() -> new ParticipantException(CHALLENGE_NOT_FOUND));
-
-          Integer numOfChallengeParticipant = participantRepository.countByChallengeId(challengeId);
-
-          if (numOfChallengeParticipant >= 10) {
-            throw new ParticipantException(CHALLENGE_PARTICIPANTS_FULL);
-          }
-
-          Participant participant = new Participant();
-          participant.setMember(member);
-          participant.setChallenge(challenge);
-          participantRepository.save(participant);
+          applyChallenge(memberId, challengeId);
         } finally {
           latch.countDown();
         }
       });
     }
-
     latch.await();
 
     Challenge result = challengeRepository.findById(challengeId)
@@ -111,22 +80,34 @@ class ParticipantServiceTest {
     assertNotEquals(10, num);
   }
 
-  @Test
-  void 챌린지_락적용o() throws ExecutionException, InterruptedException {
+  private void applyChallenge(Long memberId, Long challengeId) {
+    Member member = memberRepository.findById(memberId)
+        .orElseThrow(() -> new MemberException(ID_NOT_FOUND));
 
-    int numberOfThreads = 50;
+    Challenge challenge = challengeRepository.findById(challengeId)
+        .orElseThrow(() -> new ParticipantException(CHALLENGE_NOT_FOUND));
+
+    Integer numOfChallengeParticipant = participantRepository.countByChallengeId(challengeId);
+
+    if (numOfChallengeParticipant >= 10) {
+      throw new ParticipantException(CHALLENGE_PARTICIPANTS_FULL);
+    }
+
+    Participant participant = new Participant();
+    participant.setMember(member);
+    participant.setChallenge(challenge);
+    participantRepository.save(participant);
+  }
+
+  @Test
+  void 챌린지_락적용O_Future_O() throws ExecutionException, InterruptedException {
+    int numberOfThreads = 100;
     ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
     CountDownLatch latch = new CountDownLatch(numberOfThreads);
 
     Future<Long> createChallenge
         = executorService.submit(() -> {
-
-      Challenge challenge = new Challenge();
-      challenge.setChallengeName("test");
-      challenge.setChallengePurpose("test");
-      challenge.setSuggestedDurationDay(10);
-      challenge.setChallengeStatus(RECRUITING);
-
+      Challenge challenge = saveChallenge();
       return challengeRepository.save(challenge).getId();
     });
 
@@ -143,7 +124,37 @@ class ParticipantServiceTest {
         }
       });
     }
+    latch.await();
 
+    Challenge result = challengeRepository.findById(challengeId)
+        .orElseThrow(() -> new ChallengeException(CHALLENGE_NOT_FOUND));
+
+    int size = result.getParticipants().size();
+
+    assertEquals(10, size);
+  }
+
+
+  @Test
+  void 챌린지_락적용O_Future_x() throws InterruptedException {
+    int numberOfThreads = 100;
+    ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
+    CountDownLatch latch = new CountDownLatch(numberOfThreads);
+
+    Challenge challenge = saveChallenge();
+    Long challengeId = challengeRepository.save(challenge).getId();
+
+    for (int i = 0; i < numberOfThreads; i++) {
+      executorService.submit(() -> {
+
+        Long memberId = saveMember(Thread.currentThread().getId());
+        try {
+          participantService.applyChallenge(challengeId, memberId);
+        } finally {
+          latch.countDown();
+        }
+      });
+    }
     latch.await();
 
     Challenge result = challengeRepository.findById(challengeId)
@@ -163,5 +174,14 @@ class ParticipantServiceTest {
         .build();
 
     return memberRepository.save(member).getId();
+  }
+
+  private static Challenge saveChallenge() {
+    Challenge challenge = new Challenge();
+    challenge.setChallengeName("test");
+    challenge.setChallengePurpose("test");
+    challenge.setSuggestedDurationDay(10);
+    challenge.setChallengeStatus(RECRUITING);
+    return challenge;
   }
 }
