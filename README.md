@@ -99,8 +99,3 @@
 <hr><br>
 
 
-
-### [Go to the trouble shooting section](doc/TROUBLE_SHOOTING.md)
-
-<br>
-<hr>
