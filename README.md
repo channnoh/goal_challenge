@@ -98,8 +98,7 @@
 <br>
 <hr><br>
 
-## 🔥Trouble Shooting
-<br>
+
 
 ### [Go to the trouble shooting section](doc/TROUBLE_SHOOTING.md)
 
